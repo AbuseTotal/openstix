@@ -4,10 +4,6 @@
   "image": "abusetotal/devcontainer:latest",
   "workspaceFolder": "/openstix-python",
   "workspaceMount": "source=${localWorkspaceFolder}/,target=/openstix-python/,type=bind,consistency=cached",
-  "features": {
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers-contrib/features/hatch:2": {}
-  },
   "containerEnv": {
     "HATCH_ENV_TYPE_VIRTUAL_PATH": ".venv/default/"
   },
