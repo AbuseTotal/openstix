@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Download All",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "/openstix-python/.venv/default/bin/python",
+            "module": "openstix",
+            "args": [
+                "datasets",
+                "download",
+                "--all",
+            ],
+            "justMyCode": true,
+        },
+        {
+            "name": "Download MITRE",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "/openstix-python/.venv/default/bin/python",
+            "module": "openstix",
+            "args": [
+                "datasets",
+                "download",
+                "--provider=mitre",
+            ],
+            "justMyCode": true,
+        }
+    ]
+}

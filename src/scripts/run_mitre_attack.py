@@ -1,0 +1,20 @@
+import os
+
+from openstix import OPENSTIX_PATH
+from openstix.providers.mitre import MITREAttack
+from openstix.toolkit.sources import FileSystemSource
+
+mitre_attack = MITREAttack(
+    source=FileSystemSource(
+        stix_dir=os.path.join(OPENSTIX_PATH, "mitre", "attack"),
+        allow_custom=True,
+    ),
+)
+
+print("MITRE ATT&CK Dataset loaded.")
+
+technique = mitre_attack.technique(external_id="T1132.001")
+
+print("Search found the MITRE ATT&CK Technique ...")
+input("[PRESS ENTER]")
+print(technique.serialize(pretty=True))

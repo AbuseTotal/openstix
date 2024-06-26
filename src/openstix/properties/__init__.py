@@ -1,5 +1,27 @@
-from openstix._base import _load_submodules
-
-globals().update(_load_submodules("stix2.properties", "properties"))
+from stix2.properties import (
+    BinaryProperty,
+    BooleanProperty,
+    DictionaryProperty,
+    EmbeddedObjectProperty,
+    EnumProperty,
+    ExtensionsProperty,
+    FloatProperty,
+    HashesProperty,
+    HexProperty,
+    IDProperty,
+    IntegerProperty,
+    ListProperty,
+    ObjectReferenceProperty,
+    ObservableProperty,
+    OpenVocabProperty,
+    PatternProperty,
+    Property,
+    ReferenceProperty,
+    SelectorProperty,
+    STIXObjectProperty,
+    StringProperty,
+    TimestampProperty,
+    TypeProperty,
+)
 
 from openstix.properties import types

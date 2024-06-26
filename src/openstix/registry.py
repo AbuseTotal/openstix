@@ -1,12 +1,12 @@
 from stix2.registry import STIX2_OBJ_MAPS
 
 
-def register_objects(sdos=[], scos=[], markings=[], extensions=[]):
+def register_objects(sdos=None, scos=None, markings=None, extensions=None):
     data = {
-        "observables": scos,
-        "objects": sdos,
-        "markings": markings,
-        "extensions": extensions,
+        "observables": scos if scos else [],
+        "objects": sdos if sdos else [],
+        "markings": markings if markings else [],
+        "extensions": extensions if extensions else [],
     }
 
     for key, objects in data.items():
