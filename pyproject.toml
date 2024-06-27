@@ -16,7 +16,8 @@ keywords = [
 ]
 authors = [
     {name = "Tomás Lima", email = "tomas@abusetotal.com"},
-    {name = "Adrian Dinis", email = "adrian@abusetotal.com"}
+    {name = "Adrian Dinis", email = "adrian@abusetotal.com"},
+    {name = "Pedro Fernandes", email = "pedro@abusetotal.com"}
 ]
 classifiers = [
     "Programming Language :: Python",
