@@ -6,4 +6,3 @@ from mitreattack.stix20.custom_attack_objects import (  # noqa: F401
     Tactic,
 )
 
-from openstix.providers.abusetotal.objects import DNSRecord  # noqa: F401
