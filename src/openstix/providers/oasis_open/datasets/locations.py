@@ -11,6 +11,24 @@ class OASISOpenLocations(Dataset):
         ],
     )
 
+    def search(self, query, revoked=False):
+        return self._search(
+            [
+                Filter("name", "contains", query),
+                Filter("description", "contains", query),
+                Filter("latitude", "contains", query),
+                Filter("longitude", "contains", query),
+                Filter("precision", "contains", query),
+                Filter("region", "contains", query),
+                Filter("country", "contains", query),
+                Filter("administrative_area", "contains", query),
+                Filter("city", "contains", query),
+                Filter("street_address", "contains", query),
+                Filter("postal_code", "contains", query),
+            ],
+            revoked,
+        )
+
     def locations(self, revoked=False) -> list:
         filters = [Filter("type", "=", "location")]
         return self._query(filters, revoked)
