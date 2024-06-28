@@ -11,6 +11,16 @@ class OASISOpenVulnerabilities(Dataset):
         ],
     )
 
+    def search(self, query, revoked=False):
+        return self._search(
+            [
+                Filter("name", "contains", query),
+                Filter("description", "contains", query),
+                Filter("external_references", "contains", query),
+            ],
+            revoked,
+        )
+
     def vulnerabilities(self, revoked=False) -> list:
         filters = [Filter("type", "=", "vulnerability")]
         return self._query(filters, revoked)

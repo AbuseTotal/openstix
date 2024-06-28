@@ -112,7 +112,28 @@ class MITRE(Dataset):
         return self._query_name_and_alias(filters=[MITRE_ASSET_FILTER], name=name, aliases=aliases, revoked=revoked)
 
 
+def common_filters(query: str) -> list[Filter]:
+    return [
+        Filter("name", "contains", query),
+        Filter("description", "contains", query),
+        Filter("labels", "contains", query),
+        Filter("aliases", "contains", query),
+    ]
+
+
 class MITREAttack(MITRE):
+    def search(self, query, revoked=False):
+        filters = common_filters(query) + [
+            Filter("x_mitre_aliases", "contains", query),
+            Filter("x_mitre_domains", "contains", query),
+            Filter("x_mitre_platforms", "contains", query),
+        ]
+
+        return self.search(
+            filters,
+            revoked,
+        )
+
     config = DatasetConfig(
         provider="mitre",
         name="attack",
@@ -125,6 +146,21 @@ class MITREAttack(MITRE):
 
 
 class MITRECapec(MITRE):
+    def search(self, query, revoked=False):
+        filters = common_filters(query) + [
+            Filter("x_capec_status", "contains", query),
+            Filter("x_capec_domains", "contains", query),
+            Filter("x_capec_abstraction", "contains", query),
+            Filter("x_capec_consequences", "contains", query),
+            Filter("x_capec_prerequisites", "contains", query),
+            Filter("x_capec_resources_required", "contains", query),
+        ]
+
+        return self.search(
+            filters,
+            revoked,
+        )
+
     config = DatasetConfig(
         provider="mitre",
         name="capec",
@@ -135,6 +171,16 @@ class MITRECapec(MITRE):
 
 
 class MITREAtlas(MITRE):
+    def search(self, query, revoked=False):
+        filters = common_filters(query) + [
+            Filter("x_mitre_shortname", "contains", query),
+        ]
+
+        return self.search(
+            filters,
+            revoked,
+        )
+
     config = DatasetConfig(
         provider="mitre",
         name="atlas",

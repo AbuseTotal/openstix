@@ -11,6 +11,19 @@ class OASISOpenSectors(Dataset):
         ],
     )
 
+    def search(self, query, revoked=False):
+        return self._search(
+            [
+                Filter("name", "contains", query),
+                Filter("description", "contains", query),
+                Filter("roles", "contains", query),
+                Filter("identity_class", "contains", query),
+                Filter("sectors", "contains", query),
+                Filter("contact_information", "contains", query),
+            ],
+            revoked,
+        )
+
     def sectors(self, revoked=False) -> list:
         filters = [
             Filter("type", "=", "identity"),

@@ -44,6 +44,15 @@ class OASISOpenTLPs(Dataset):
     def white(self):
         return _WHITE
 
+    def search(self, query, revoked=False):
+        return self._search(
+            [
+                Filter("definition_type", "contains", query),
+                Filter("definition.tlp", "contains", query),
+            ],
+            revoked,
+        )
+
     def tlps(self, revoked=False) -> list:
         filters = [Filter("type", "=", "marking-definition")]
         return self._query(filters, revoked)

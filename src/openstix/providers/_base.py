@@ -3,6 +3,7 @@ from abc import ABC
 from pydantic import BaseModel
 
 from openstix.filters import Filter
+from openstix.filters.filters import OrFilterSet
 from openstix.toolkit import Environment
 from openstix.toolkit.sources import DataSource
 
@@ -47,6 +48,16 @@ class Dataset(ABC):
             return objects[0]
 
         return None
+
+    def _search(self, filters, revoked=False):
+        or_filter_set = OrFilterSet(filters)
+
+        stix_objs = self._query()
+        results = or_filter_set.apply(stix_objs)
+
+        unique_results = list({obj.id: obj for obj in results}.values())
+
+        return unique_results
 
     def _query_name_and_alias(self, filters, name, aliases=True, revoked=False):
         filters += [Filter("name", "=", name)]
