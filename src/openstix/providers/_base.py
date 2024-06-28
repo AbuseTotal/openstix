@@ -52,17 +52,19 @@ class Dataset(ABC):
     def _search(self, filters, revoked=False):
         or_filter_set = OrFilterSet(filters)
 
-        stix_objs = self._query()
+        stix_objs = self._query(revoked=revoked)
         results = or_filter_set.apply(stix_objs)
 
         unique_results = list({obj.id: obj for obj in results}.values())
 
         return unique_results
 
-    def _query_name_and_alias(self, filters, name, aliases=True, revoked=False):
-        filters += [Filter("name", "=", name)]
+    def _query_name_and_alias(self, name, aliases=True, revoked=False):
+        filters = [
+            Filter("name", "=", name),
+        ]
 
         if aliases:
             filters += [Filter("aliases", "contains", name)]
 
-        return self._query_one(filters, revoked=False)
+        return self._search(filters, revoked=revoked)
