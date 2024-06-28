@@ -16,16 +16,23 @@ def datasets():
 
 @datasets.command(help="Download datasets from STIX providers.")
 @click.option("--provider", default=None, help="Download the specified provider.")
+@click.option("--dataset", default=None, help="Download the specified dataset from the provider.")
 @click.option("--all", "download_all", is_flag=True, default=False, help="Download all available providers.")
 @click.pass_context
-def download(ctx, provider, download_all):
+def download(ctx, provider, dataset, download_all):
     if not (provider or download_all):
         click.echo("Error: You must specify either --provider or --all.")
         click.echo()
         click.echo(ctx.get_help())
         ctx.exit(1)
 
-    utils.download(provider)
+    if dataset and not provider:
+        click.echo("Error: You must specify --provider when using --dataset.")
+        click.echo()
+        click.echo(ctx.get_help())
+        ctx.exit(1)
+
+    utils.download(provider, dataset)
 
 
 cli.add_command(datasets)
