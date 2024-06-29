@@ -35,7 +35,7 @@ class MITRE(Dataset):
     def technique(self, external_id, revoked=False):
         filters = [
             ATTACK_PATTERN_FILTER,
-            Filter("external_references.external_id", "=", external_id),
+            Filter("external_references.external_id", "=", external_id, case_insensitive=True),
         ]
         return self._query_one(filters, revoked)
 
@@ -114,19 +114,19 @@ class MITRE(Dataset):
 
 def common_filters(query: str) -> list[Filter]:
     return [
-        Filter("name", "contains", query),
-        Filter("description", "contains", query),
-        Filter("labels", "contains", query),
-        Filter("aliases", "contains", query),
+        Filter("name", "contains", query, case_insensitive=True),
+        Filter("description", "contains", query, case_insensitive=True),
+        Filter("labels", "contains", query, case_insensitive=True),
+        Filter("aliases", "contains", query, case_insensitive=True),
     ]
 
 
 class MITREAttack(MITRE):
     def search(self, query, revoked=False):
         filters = common_filters(query) + [
-            Filter("x_mitre_aliases", "contains", query),
-            Filter("x_mitre_domains", "contains", query),
-            Filter("x_mitre_platforms", "contains", query),
+            Filter("x_mitre_aliases", "contains", query, case_insensitive=True),
+            Filter("x_mitre_domains", "contains", query, case_insensitive=True),
+            Filter("x_mitre_platforms", "contains", query, case_insensitive=True),
         ]
 
         return self.search(
@@ -148,12 +148,12 @@ class MITREAttack(MITRE):
 class MITRECapec(MITRE):
     def search(self, query, revoked=False):
         filters = common_filters(query) + [
-            Filter("x_capec_status", "contains", query),
-            Filter("x_capec_domains", "contains", query),
-            Filter("x_capec_abstraction", "contains", query),
-            Filter("x_capec_consequences", "contains", query),
-            Filter("x_capec_prerequisites", "contains", query),
-            Filter("x_capec_resources_required", "contains", query),
+            Filter("x_capec_status", "contains", query, case_insensitive=True),
+            Filter("x_capec_domains", "contains", query, case_insensitive=True),
+            Filter("x_capec_abstraction", "contains", query, case_insensitive=True),
+            Filter("x_capec_consequences", "contains", query, case_insensitive=True),
+            Filter("x_capec_prerequisites", "contains", query, case_insensitive=True),
+            Filter("x_capec_resources_required", "contains", query, case_insensitive=True),
         ]
 
         return self.search(
@@ -173,7 +173,7 @@ class MITRECapec(MITRE):
 class MITREAtlas(MITRE):
     def search(self, query, revoked=False):
         filters = common_filters(query) + [
-            Filter("x_mitre_shortname", "contains", query),
+            Filter("x_mitre_shortname", "contains", query, case_insensitive=True),
         ]
 
         return self.search(

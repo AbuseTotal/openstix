@@ -47,8 +47,8 @@ class OASISOpenTLPs(Dataset):
     def search(self, query, revoked=False):
         return self._search(
             [
-                Filter("definition_type", "contains", query),
-                Filter("definition.tlp", "contains", query),
+                Filter("definition_type", "contains", query, case_insensitive=True),
+                Filter("definition.tlp", "contains", query, case_insensitive=True),
             ],
             revoked,
         )
@@ -64,6 +64,6 @@ class OASISOpenTLPs(Dataset):
         filters = [
             Filter("type", "=", "marking-definition"),
             Filter("definition_type", "=", "tlp"),
-            Filter("definition.tlp", "=", color),
+            Filter("definition.tlp", "=", color, case_insensitive=True),
         ]
         return self._query(filters, revoked)
