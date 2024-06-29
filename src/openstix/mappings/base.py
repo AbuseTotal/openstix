@@ -16,8 +16,8 @@ def load_objects_mappings(module):
 
         object_class = getattr(module, object_class_name)
 
-        if object_class_name in ["GranularMarking", "LanguageContent", "StatementMarking", "TLPMarking"]:
-            SMOS_MAPPING[object_class_name] = object_class
+        if object_class_name in ["MarkingDefinition", "LanguageContent", "StatementMarking", "TLPMarking"]:
+            SMOS_MAPPING[object_class._type] = object_class
             continue
 
         mapping_type = get_object_type(object_class._type)
