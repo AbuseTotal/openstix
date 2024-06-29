@@ -14,16 +14,16 @@ class OASISOpenLocations(Dataset):
     def search(self, query, revoked=False):
         return self._search(
             [
-                Filter("name", "contains", query),
-                Filter("description", "contains", query),
+                Filter("name", "contains", query, case_insensitive=True),
+                Filter("description", "contains", query, case_insensitive=True),
                 Filter("latitude", "contains", query),
                 Filter("longitude", "contains", query),
                 Filter("precision", "contains", query),
-                Filter("region", "contains", query),
-                Filter("country", "contains", query),
-                Filter("administrative_area", "contains", query),
-                Filter("city", "contains", query),
-                Filter("street_address", "contains", query),
+                Filter("region", "contains", query, case_insensitive=True),
+                Filter("country", "contains", query, case_insensitive=True),
+                Filter("administrative_area", "contains", query, case_insensitive=True),
+                Filter("city", "contains", query, case_insensitive=True),
+                Filter("street_address", "contains", query, case_insensitive=True),
                 Filter("postal_code", "contains", query),
             ],
             revoked,
@@ -36,7 +36,7 @@ class OASISOpenLocations(Dataset):
     def location(self, name, revoked=False):
         filters = [
             Filter("type", "=", "location"),
-            Filter("name", "=", name),
+            Filter("name", "=", name, case_insensitive=True),
         ]
         return self._query_one(filters, revoked)
 
@@ -50,7 +50,7 @@ class OASISOpenLocations(Dataset):
     def region(self, name, revoked=False):
         filters = [
             Filter("type", "=", "location"),
-            Filter("region", "=", name),
+            Filter("region", "=", name, case_insensitive=True),
         ]
         return self._query_one(filters, revoked)
 
@@ -86,28 +86,28 @@ class OASISOpenLocations(Dataset):
     def locations_by_country(self, country, revoked=False) -> list:
         filters = [
             Filter("type", "=", "location"),
-            Filter("country", "=", country),
+            Filter("country", "=", country, case_insensitive=True),
         ]
         return self._query(filters, revoked)
 
     def locations_by_administrative_area(self, administrative_area, revoked=False) -> list:
         filters = [
             Filter("type", "=", "location"),
-            Filter("administrative_area", "=", administrative_area),
+            Filter("administrative_area", "=", administrative_area, case_insensitive=True),
         ]
         return self._query(filters, revoked)
 
     def locations_by_city(self, city, revoked=False) -> list:
         filters = [
             Filter("type", "=", "location"),
-            Filter("city", "=", city),
+            Filter("city", "=", city, case_insensitive=True),
         ]
         return self._query(filters, revoked)
 
     def locations_by_street_address(self, street_address, revoked=False) -> list:
         filters = [
             Filter("type", "=", "location"),
-            Filter("street_address", "=", street_address),
+            Filter("street_address", "=", street_address, case_insensitive=True),
         ]
         return self._query(filters, revoked)
 

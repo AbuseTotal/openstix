@@ -14,9 +14,9 @@ class OASISOpenVulnerabilities(Dataset):
     def search(self, query, revoked=False):
         return self._search(
             [
-                Filter("name", "contains", query),
-                Filter("description", "contains", query),
-                Filter("external_references", "contains", query),
+                Filter("name", "contains", query, case_insensitive=True),
+                Filter("description", "contains", query, case_insensitive=True),
+                Filter("external_references", "contains", query, case_insensitive=True),
             ],
             revoked,
         )
@@ -28,27 +28,27 @@ class OASISOpenVulnerabilities(Dataset):
     def vulnerability(self, name, revoked=False):
         filters = [
             Filter("type", "=", "vulnerability"),
-            Filter("name", "=", name),
+            Filter("name", "=", name, case_insensitive=True),
         ]
         return self._query_one(filters, revoked)
 
     def vulnerabilities_by_description(self, description, revoked=False) -> list:
         filters = [
             Filter("type", "=", "vulnerability"),
-            Filter("description", "contains", description),
+            Filter("description", "contains", description, case_insensitive=True),
         ]
         return self._query(filters, revoked)
 
     def vulnerabilities_by_external_reference(self, external_id, revoked=False) -> list:
         filters = [
             Filter("type", "=", "vulnerability"),
-            Filter("external_references.external_id", "=", external_id),
+            Filter("external_references.external_id", "=", external_id, case_insensitive=True),
         ]
         return self._query(filters, revoked)
 
     def vulnerabilities_by_created_by(self, created_by_ref, revoked=False) -> list:
         filters = [
             Filter("type", "=", "vulnerability"),
-            Filter("created_by_ref", "=", created_by_ref),
+            Filter("created_by_ref", "=", created_by_ref, case_insensitive=True),
         ]
         return self._query(filters, revoked)
