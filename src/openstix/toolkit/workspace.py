@@ -51,7 +51,7 @@ class Workspace(Environment):
         self.add(obj)
         return obj
 
-    def query(self, query=[], last_version_only=True):
+    def query(self, query=None, last_version_only=True):
         """Executes a query against the store to retrieve STIX objects.
 
         Args:
@@ -65,6 +65,9 @@ class Workspace(Environment):
             List[stix2.base._STIXBase]: A list of STIX objects that match the query criteria. When `last_version_only`
                                         is True, the list will contain only the most recent version of each object.
         """
+        if query is None:
+            query = []
+
         all_objects = super().query(query)
         if not last_version_only or not all_objects:
             return all_objects
