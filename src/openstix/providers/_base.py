@@ -61,10 +61,10 @@ class Dataset(ABC):
 
     def _query_name_and_alias(self, name, aliases=True, revoked=False):
         filters = [
-            Filter("name", "=", name),
+            Filter("name", "=", name, case_insensitive=True),
         ]
 
         if aliases:
-            filters += [Filter("aliases", "contains", name)]
+            filters += [Filter("aliases", "contains", name, case_insensitive=True)]
 
         return self._search(filters, revoked=revoked)

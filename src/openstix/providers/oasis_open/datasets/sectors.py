@@ -14,12 +14,12 @@ class OASISOpenSectors(Dataset):
     def search(self, query, revoked=False):
         return self._search(
             [
-                Filter("name", "contains", query),
-                Filter("description", "contains", query),
-                Filter("roles", "contains", query),
-                Filter("identity_class", "contains", query),
-                Filter("sectors", "contains", query),
-                Filter("contact_information", "contains", query),
+                Filter("name", "contains", query, case_insensitive=True),
+                Filter("description", "contains", query, case_insensitive=True),
+                Filter("roles", "contains", query, case_insensitive=True),
+                Filter("identity_class", "contains", query, case_insensitive=True),
+                Filter("sectors", "contains", query, case_insensitive=True),
+                Filter("contact_information", "contains", query, case_insensitive=True),
             ],
             revoked,
         )
@@ -34,6 +34,6 @@ class OASISOpenSectors(Dataset):
     def sector(self, name, aliases=True, revoked=False):
         filters = [
             Filter("type", "=", "identity"),
-            Filter("name", "=", name),
+            Filter("name", "=", name, case_insensitive=True),
         ]
         return self._query_one(filters, revoked)
