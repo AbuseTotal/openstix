@@ -1,7 +1,6 @@
 from openstix import extensions, objects
 from openstix.utils import get_object_type
 
-
 STIX_OBJECTS_MAPPING = {}
 STIX_OBJECTS_EXTENSIONS_MAPPING = {}
 SCOS_MAPPING = {}
@@ -18,7 +17,7 @@ def load_objects_mappings(module):
         object_class = getattr(module, object_class_name)
 
         if object_class_name in ["GranularMarking", "LanguageContent", "StatementMarking", "TLPMarking"]:
-            SMOS_MAPPING["smo"] = object_class
+            SMOS_MAPPING[object_class_name] = object_class
             continue
 
         mapping_type = get_object_type(object_class._type)
