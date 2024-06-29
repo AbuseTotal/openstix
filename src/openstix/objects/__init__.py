@@ -1,7 +1,7 @@
 from stix2.v21.bundle import Bundle
 from stix2.v21.common import (
-    GranularMarking,
     LanguageContent,
+    MarkingDefinition,
     StatementMarking,
     TLPMarking,
 )
