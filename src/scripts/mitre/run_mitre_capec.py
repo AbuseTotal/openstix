@@ -4,7 +4,7 @@ from openstix import OPENSTIX_PATH
 from openstix.providers.mitre import MITRECapec
 from openstix.toolkit.sources import FileSystemSource
 
-mitre_atlas = MITRECapec(
+mitre_capec = MITRECapec(
     source=FileSystemSource(
         stix_dir=os.path.join(
             OPENSTIX_PATH,
@@ -17,7 +17,7 @@ mitre_atlas = MITRECapec(
 
 print("MITRE CAPEC Dataset loaded.")
 
-technique = mitre_atlas.technique(external_id="AML.T0003")
+technique = mitre_capec.technique(external_id="CAPEC-586")
 
 print("Search found the MITRE CAPEC Technique ...")
 input("[PRESS ENTER]")

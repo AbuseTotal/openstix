@@ -129,7 +129,7 @@ class MITREAttack(MITRE):
     def techniques(self) -> list:
         filters = [
             ATTACK_PATTERN_FILTER,
-            Filter("external_references.source_name", "=", "attack"),
+            Filter("external_references.source_name", "=", "mitre-attack"),
         ]
         return self._query(filters)
 
@@ -183,6 +183,6 @@ class MITREAtlas(MITRE):
     def techniques(self) -> list:
         filters = [
             ATTACK_PATTERN_FILTER,
-            Filter("external_references.source_name", "=", "attack"),
+            Filter("external_references.source_name", "=", "mitre-atlas"),
         ]
         return self._query(filters)
