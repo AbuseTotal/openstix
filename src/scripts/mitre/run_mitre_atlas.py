@@ -6,7 +6,11 @@ from openstix.toolkit.sources import FileSystemSource
 
 mitre_atlas = MITREAtlas(
     source=FileSystemSource(
-        stix_dir=os.path.join(OPENSTIX_PATH, "mitre", "atlas"),
+        stix_dir=os.path.join(
+            OPENSTIX_PATH,
+            MITREAtlas.config.provider,
+            MITREAtlas.config.name,
+        ),
         allow_custom=True,
     ),
 )

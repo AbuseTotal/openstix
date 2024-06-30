@@ -1,4 +1,4 @@
-from stix2.v21.observables import (
+from stix2.v21.observables import (  # noqa: F401
     ArchiveExt,
     HTTPRequestExt,
     ICMPExt,
@@ -13,4 +13,4 @@ from stix2.v21.observables import (
     WindowsServiceExt,
 )
 
-from openstix.extensions import custom
+from openstix.extensions import custom  # noqa: F401

@@ -25,6 +25,19 @@
                 "--provider=mitre",
             ],
             "justMyCode": true,
-        }
+        },
+        {
+            "name": "Download Oasis Open",
+            "type": "debugpy",
+            "request": "launch",
+            "python": "/openstix-python/.venv/default/bin/python",
+            "module": "openstix",
+            "args": [
+                "datasets",
+                "download",
+                "--provider=oasis-open",
+            ],
+            "justMyCode": true,
+        },
     ]
 }
