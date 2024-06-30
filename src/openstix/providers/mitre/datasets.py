@@ -14,126 +14,99 @@ from openstix.providers.mitre.presets import (
     MITRE_DATA_COMPONENT_FILTER,
     MITRE_DATASOURCE_FILTER,
     MITRE_MATRIX_FILTER,
-    MITRE_SUBTECHNIQUE_FILTER,
     MITRE_TACTIC_FILTER,
-    MITRE_TECHNIQUE_FILTER,
 )
 
 
 class MITRE(Dataset):
-    def techniques(self, include_subtechniques=True, revoked=False) -> list:
+    def techniques(self) -> list:
         filters = [ATTACK_PATTERN_FILTER]
-        if include_subtechniques:
-            filters += [MITRE_SUBTECHNIQUE_FILTER]
-        else:
-            filters += [MITRE_TECHNIQUE_FILTER]
-        return self._query(filters, revoked)
+        return self._query(filters)
 
-    def subtechniques(self, revoked=False) -> list:
-        return self._query([ATTACK_PATTERN_FILTER, MITRE_SUBTECHNIQUE_FILTER], revoked)
-
-    def technique(self, external_id, revoked=False):
+    def technique(self, external_id):
         filters = [
             ATTACK_PATTERN_FILTER,
-            Filter("external_references.external_id", "=", external_id, case_insensitive=True),
+            Filter("external_references.external_id", "=", external_id),
         ]
-        return self._query_one(filters, revoked)
+        return self._query_one(filters)
 
-    def intrusion_sets(self, revoked=False):
-        return self._query([INTRUSION_SET_FILTER], revoked)
+    def intrusion_sets(self):
+        return self._query([INTRUSION_SET_FILTER])
 
-    def intrusion_set(self, name, aliases=True, revoked=False):
-        return self._query_name_and_alias(filters=[INTRUSION_SET_FILTER], name=name, aliases=aliases, revoked=revoked)
+    def intrusion_set(self, name, aliases=True):
+        return self._query_name_and_alias(filters=[INTRUSION_SET_FILTER], name=name, aliases=aliases)
 
-    def campaigns(self, revoked=False):
-        return self._query([CAMPAIGN_FILTER], revoked)
+    def campaigns(self):
+        return self._query([CAMPAIGN_FILTER])
 
-    def campaign(self, name, aliases=True, revoked=False):
-        return self._query_name_and_alias(filters=[CAMPAIGN_FILTER], name=name, aliases=aliases, revoked=revoked)
+    def campaign(self, name, aliases=True):
+        return self._query_name_and_alias(filters=[CAMPAIGN_FILTER], name=name, aliases=aliases)
 
-    def malwares(self, revoked=False):
-        return self._query([MALWARE_FILTER], revoked)
+    def malwares(self):
+        return self._query([MALWARE_FILTER])
 
-    def malware(self, name, aliases=True, revoked=False):
-        return self._query_name_and_alias(filters=[MALWARE_FILTER], name=name, aliases=aliases, revoked=revoked)
+    def malware(self, name, aliases=True):
+        return self._query_name_and_alias(filters=[MALWARE_FILTER], name=name, aliases=aliases)
 
-    def tools(self, revoked=False):
-        return self._query([TOOL_FILTER], revoked)
+    def tools(self):
+        return self._query([TOOL_FILTER])
 
-    def tool(self, name, aliases=True, revoked=False):
-        return self._query_name_and_alias(filters=[TOOL_FILTER], name=name, aliases=aliases, revoked=revoked)
+    def tool(self, name, aliases=True):
+        return self._query_name_and_alias(filters=[TOOL_FILTER], name=name, aliases=aliases)
 
-    def matrices(self, revoked=False):
-        return self._query([MITRE_MATRIX_FILTER], revoked)
+    def matrices(self):
+        return self._query([MITRE_MATRIX_FILTER])
 
-    def matrix(self, name, aliases=True, revoked=False):
-        return self._query_name_and_alias(filters=[MITRE_MATRIX_FILTER], name=name, aliases=aliases, revoked=revoked)
+    def matrix(self, name, aliases=True):
+        return self._query_name_and_alias(filters=[MITRE_MATRIX_FILTER], name=name, aliases=aliases)
 
-    def tactics(self, revoked=False):
-        return self._query([MITRE_TACTIC_FILTER], revoked)
+    def tactics(self):
+        return self._query([MITRE_TACTIC_FILTER])
 
-    def tactic(self, name, aliases=False, revoked=False):
-        return self._query_name_and_alias(filters=[MITRE_TACTIC_FILTER], name=name, aliases=aliases, revoked=revoked)
+    def tactic(self, name, aliases=False):
+        return self._query_name_and_alias(filters=[MITRE_TACTIC_FILTER], name=name, aliases=aliases)
 
-    def mitigations(self, revoked=False):
-        return self._query([COURSE_OF_ACTION_FILTER], revoked)
+    def mitigations(self):
+        return self._query([COURSE_OF_ACTION_FILTER])
 
-    def mitigation(self, name, aliases=False, revoked=False):
-        return self._query_name_and_alias(
-            filters=[COURSE_OF_ACTION_FILTER], name=name, aliases=aliases, revoked=revoked
-        )
+    def mitigation(self, name, aliases=False):
+        return self._query_name_and_alias(filters=[COURSE_OF_ACTION_FILTER], name=name, aliases=aliases)
 
-    def softwares(self, revoked=False):
-        return self._query([SOFTWARE_FILTER], revoked)
+    def softwares(self):
+        return self._query([SOFTWARE_FILTER])
 
-    def software(self, name, aliases=True, revoked=False):
-        return self._query_name_and_alias(filters=[SOFTWARE_FILTER], name=name, aliases=aliases, revoked=revoked)
+    def software(self, name, aliases=True):
+        return self._query_name_and_alias(filters=[SOFTWARE_FILTER], name=name, aliases=aliases)
 
-    def data_sources(self, revoked=False):
-        return self._query([MITRE_DATASOURCE_FILTER], revoked)
+    def data_sources(self):
+        return self._query([MITRE_DATASOURCE_FILTER])
 
-    def data_source(self, name, aliases=False, revoked=False):
-        return self._query_name_and_alias(
-            filters=[MITRE_DATASOURCE_FILTER], name=name, aliases=aliases, revoked=revoked
-        )
+    def data_source(self, name, aliases=False):
+        return self._query_name_and_alias(filters=[MITRE_DATASOURCE_FILTER], name=name, aliases=aliases)
 
-    def data_components(self, revoked=False):
-        return self._query([MITRE_DATA_COMPONENT_FILTER], revoked)
+    def data_components(self):
+        return self._query([MITRE_DATA_COMPONENT_FILTER])
 
-    def data_component(self, name, aliases=False, revoked=False):
-        return self._query_name_and_alias(
-            filters=[MITRE_DATA_COMPONENT_FILTER], name=name, aliases=aliases, revoked=revoked
-        )
+    def data_component(self, name, aliases=False):
+        return self._query_name_and_alias(filters=[MITRE_DATA_COMPONENT_FILTER], name=name, aliases=aliases)
 
-    def assets(self, revoked=False):
-        return self._query([MITRE_ASSET_FILTER], revoked)
+    def assets(self):
+        return self._query([MITRE_ASSET_FILTER])
 
-    def asset(self, name, aliases=False, revoked=False):
-        return self._query_name_and_alias(filters=[MITRE_ASSET_FILTER], name=name, aliases=aliases, revoked=revoked)
+    def asset(self, name, aliases=False):
+        return self._query_name_and_alias(filters=[MITRE_ASSET_FILTER], name=name, aliases=aliases)
 
 
 def common_filters(query: str) -> list[Filter]:
     return [
-        Filter("name", "contains", query, case_insensitive=True),
-        Filter("description", "contains", query, case_insensitive=True),
-        Filter("labels", "contains", query, case_insensitive=True),
-        Filter("aliases", "contains", query, case_insensitive=True),
+        Filter("name", "contains", query),
+        Filter("description", "contains", query),
+        Filter("labels", "contains", query),
+        Filter("aliases", "contains", query),
     ]
 
 
 class MITREAttack(MITRE):
-    def search(self, query, revoked=False):
-        filters = common_filters(query) + [
-            Filter("x_mitre_aliases", "contains", query, case_insensitive=True),
-            Filter("x_mitre_domains", "contains", query, case_insensitive=True),
-            Filter("x_mitre_platforms", "contains", query, case_insensitive=True),
-        ]
-
-        return self.search(
-            filters,
-            revoked,
-        )
-
     config = DatasetConfig(
         provider="mitre",
         name="attack",
@@ -144,23 +117,24 @@ class MITREAttack(MITRE):
         ],
     )
 
-
-class MITRECapec(MITRE):
-    def search(self, query, revoked=False):
+    def search(self, query):
         filters = common_filters(query) + [
-            Filter("x_capec_status", "contains", query, case_insensitive=True),
-            Filter("x_capec_domains", "contains", query, case_insensitive=True),
-            Filter("x_capec_abstraction", "contains", query, case_insensitive=True),
-            Filter("x_capec_consequences", "contains", query, case_insensitive=True),
-            Filter("x_capec_prerequisites", "contains", query, case_insensitive=True),
-            Filter("x_capec_resources_required", "contains", query, case_insensitive=True),
+            Filter("x_mitre_aliases", "contains", query),
+            Filter("x_mitre_domains", "contains", query),
+            Filter("x_mitre_platforms", "contains", query),
         ]
 
-        return self.search(
-            filters,
-            revoked,
-        )
+        return self.search(filters)
 
+    def techniques(self) -> list:
+        filters = [
+            ATTACK_PATTERN_FILTER,
+            Filter("external_references.source_name", "=", "attack"),
+        ]
+        return self._query(filters)
+
+
+class MITRECapec(MITRE):
     config = DatasetConfig(
         provider="mitre",
         name="capec",
@@ -169,18 +143,27 @@ class MITRECapec(MITRE):
         ],
     )
 
-
-class MITREAtlas(MITRE):
-    def search(self, query, revoked=False):
+    def search(self, query):
         filters = common_filters(query) + [
-            Filter("x_mitre_shortname", "contains", query, case_insensitive=True),
+            Filter("x_capec_status", "contains", query),
+            Filter("x_capec_domains", "contains", query),
+            Filter("x_capec_abstraction", "contains", query),
+            Filter("x_capec_consequences", "contains", query),
+            Filter("x_capec_prerequisites", "contains", query),
+            Filter("x_capec_resources_required", "contains", query),
         ]
 
-        return self.search(
-            filters,
-            revoked,
-        )
+        return self.search(filters)
 
+    def techniques(self) -> list:
+        filters = [
+            ATTACK_PATTERN_FILTER,
+            Filter("external_references.source_name", "=", "capec"),
+        ]
+        return self._query(filters)
+
+
+class MITREAtlas(MITRE):
     config = DatasetConfig(
         provider="mitre",
         name="atlas",
@@ -189,3 +172,17 @@ class MITREAtlas(MITRE):
             "https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/main/dist/stix-atlas.json",
         ],
     )
+
+    def search(self, query):
+        filters = common_filters(query) + [
+            Filter("x_mitre_shortname", "contains", query),
+        ]
+
+        return self.search(filters)
+
+    def techniques(self) -> list:
+        filters = [
+            ATTACK_PATTERN_FILTER,
+            Filter("external_references.source_name", "=", "attack"),
+        ]
+        return self._query(filters)

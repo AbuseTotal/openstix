@@ -1,4 +1,4 @@
-from .locations import OASISOpenLocations  # noqa: F401
-from .sectors import OASISOpenSectors  # noqa: F401
-from .tlps import OASISOpenTLPs  # noqa: F401
-from .vulnerabilities import OASISOpenVulnerabilities  # noqa: F401
+from .industries import Industries  # noqa: F401
+from .locations import Locations  # noqa: F401
+from .tlps import TLP20  # noqa: F401
+from .vulnerabilities import Vulnerabilities  # noqa: F401

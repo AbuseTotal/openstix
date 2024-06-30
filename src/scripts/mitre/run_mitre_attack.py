@@ -6,7 +6,11 @@ from openstix.toolkit.sources import FileSystemSource
 
 mitre_attack = MITREAttack(
     source=FileSystemSource(
-        stix_dir=os.path.join(OPENSTIX_PATH, "mitre", "attack"),
+        stix_dir=os.path.join(
+            OPENSTIX_PATH,
+            MITREAttack.config.provider,
+            MITREAttack.config.name,
+        ),
         allow_custom=True,
     ),
 )

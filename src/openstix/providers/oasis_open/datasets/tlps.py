@@ -1,69 +1,53 @@
-from stix2.v21.common import TLP_AMBER as _AMBER
-from stix2.v21.common import TLP_GREEN as _GREEN
-from stix2.v21.common import TLP_RED as _RED
-from stix2.v21.common import TLP_WHITE as _WHITE
-
 from openstix.filters import Filter
 from openstix.providers._base import Dataset, DatasetConfig
 
+VALID_TLPs = [
+    "CLEAR",
+    "GREEN",
+    "AMBER",
+    "AMBER+STRICT",
+    "RED",
+]
 
-class OASISOpenTLPs(Dataset):
+
+class TLP20(Dataset):
     config = DatasetConfig(
         provider="oasis-open",
-        name="tlps",
+        name="tlp20",
         urls=[
             "https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/marking-definition",
         ],
     )
 
-    def get_tlp(self, name):
-        if name == "white":
-            return _WHITE
-        elif name == "green":
-            return _GREEN
-        elif name == "amber":
-            return _AMBER
-        elif name == "red":
-            return _RED
-        else:
-            raise ValueError(f"Invalid TLP name: {name}")
+    def get_tlp(self, color):
+        color = color.upper()
+
+        if color not in VALID_TLPs:
+            raise ValueError(f"Invalid TLP color: {color}")
+
+        return self._query_one(
+            filters=[
+                Filter("type", "=", "marking-definition"),
+                Filter("name", "=", f"TLP:{color}"),
+            ]
+        )
 
     @property
     def red(self):
-        return _RED
+        return self.get_tlp("RED")
+
+    @property
+    def amber_strict(self):
+        return self.get_tlp("AMBER+STRICT")
 
     @property
     def amber(self):
-        return _AMBER
+        return self.get_tlp("AMBER")
 
     @property
     def green(self):
-        return _GREEN
+        return self.get_tlp("GREEN")
 
     @property
-    def white(self):
-        return _WHITE
-
-    def search(self, query, revoked=False):
-        return self._search(
-            [
-                Filter("definition_type", "contains", query, case_insensitive=True),
-                Filter("definition.tlp", "contains", query, case_insensitive=True),
-            ],
-            revoked,
-        )
-
-    def tlps(self, revoked=False) -> list:
-        filters = [Filter("type", "=", "marking-definition")]
-        return self._query(filters, revoked)
-
-    def tlp_by_color(self, color, revoked=False):
-        if color not in ["white", "green", "amber", "red"]:
-            raise ValueError(f"Invalid TLP color: {color}")
-
-        filters = [
-            Filter("type", "=", "marking-definition"),
-            Filter("definition_type", "=", "tlp"),
-            Filter("definition.tlp", "=", color, case_insensitive=True),
-        ]
-        return self._query(filters, revoked)
+    def clear(self):
+        return self.get_tlp("CLEAR")

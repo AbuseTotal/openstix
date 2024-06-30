@@ -1,5 +1,3 @@
-from stix2.datastore.filters import FilterSet, apply_common_filters
+from stix2.datastore.filters import Filter, FilterSet  # noqa: F401
 
-from openstix.filters import presets
-
-from .filters import Filter, OrFilterSet
+from openstix.filters import presets  # noqa: F401

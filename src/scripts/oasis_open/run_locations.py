@@ -1,21 +1,27 @@
 import os
 
 from openstix import OPENSTIX_PATH
-from openstix.providers.oasis_open.datasets.locations import OASISOpenLocations
+from openstix.providers.oasis_open import Locations
 from openstix.toolkit.sources import FileSystemSource
 
-oasis_locations = OASISOpenLocations(
+locations = Locations(
     source=FileSystemSource(
-        stix_dir=os.path.join(OPENSTIX_PATH, "oasis-open", "locations"),
+        stix_dir=os.path.join(
+            OPENSTIX_PATH,
+            Locations.config.provider,
+            Locations.config.name,
+        ),
         allow_custom=True,
     ),
 )
 
 print("OASIS Open Locations Dataset loaded.")
 
-locations = oasis_locations.locations_by_country(country="PE")
+location = locations.country("PT")
+print(location.serialize(pretty=True))
 
-print("Search found the location PE ...")
-input("[PRESS ENTER]")
-for location in locations:
-    print(location.serialize(pretty=True))
+location = locations.region("western-europe")
+print(location.serialize(pretty=True))
+
+location = locations.administrative_area("US", "DC")
+print(location.serialize(pretty=True))

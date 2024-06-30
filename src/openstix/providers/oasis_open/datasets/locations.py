@@ -1,8 +1,9 @@
 from openstix.filters import Filter
+from openstix.objects import Location
 from openstix.providers._base import Dataset, DatasetConfig
 
 
-class OASISOpenLocations(Dataset):
+class Locations(Dataset):
     config = DatasetConfig(
         provider="oasis-open",
         name="locations",
@@ -11,109 +12,72 @@ class OASISOpenLocations(Dataset):
         ],
     )
 
-    def search(self, query, revoked=False):
+    def search(self, query):
         return self._search(
             [
-                Filter("name", "contains", query, case_insensitive=True),
-                Filter("description", "contains", query, case_insensitive=True),
+                Filter("name", "contains", query),
+                Filter("description", "contains", query),
                 Filter("latitude", "contains", query),
                 Filter("longitude", "contains", query),
                 Filter("precision", "contains", query),
-                Filter("region", "contains", query, case_insensitive=True),
-                Filter("country", "contains", query, case_insensitive=True),
-                Filter("administrative_area", "contains", query, case_insensitive=True),
-                Filter("city", "contains", query, case_insensitive=True),
-                Filter("street_address", "contains", query, case_insensitive=True),
+                Filter("region", "contains", query),
+                Filter("country", "contains", query),
+                Filter("administrative_area", "contains", query),
+                Filter("city", "contains", query),
+                Filter("street_address", "contains", query),
                 Filter("postal_code", "contains", query),
-            ],
-            revoked,
+            ]
         )
 
-    def locations(self, revoked=False) -> list:
-        filters = [Filter("type", "=", "location")]
-        return self._query(filters, revoked)
-
-    def location(self, name, revoked=False):
+    def regions(self) -> list[Location]:
         filters = [
             Filter("type", "=", "location"),
-            Filter("name", "=", name, case_insensitive=True),
         ]
-        return self._query_one(filters, revoked)
+        return [item for item in self._query(filters) if hasattr(item, "region")]
 
-    def regions(self, revoked=False) -> list:
+    def region(self, value: str) -> Location:
+        value = value.lower().replace("_", "-").replace(" ", "-")
+
         filters = [
             Filter("type", "=", "location"),
-            Filter("region", "exists", True),
+            Filter("region", "=", value),
         ]
-        return self._query(filters, revoked)
+        return self._query_one(filters)
 
-    def region(self, name, revoked=False):
+    def countries(self) -> list[Location]:
         filters = [
             Filter("type", "=", "location"),
-            Filter("region", "=", name, case_insensitive=True),
         ]
-        return self._query_one(filters, revoked)
+        return [item for item in self._query(filters) if hasattr(item, "country")]
 
-    def locations_by_latitude(self, latitude, revoked=False) -> list:
+    def country(self, value: str) -> Location:
+        value = value.upper()
+
         filters = [
             Filter("type", "=", "location"),
-            Filter("latitude", "=", latitude),
+            Filter("country", "=", value),
         ]
-        return self._query(filters, revoked)
+        return self._query_one(filters)
 
-    def locations_by_longitude(self, longitude, revoked=False) -> list:
+    def administrative_areas(self, country: str) -> list[Location]:
+        country = country.upper()
+
         filters = [
             Filter("type", "=", "location"),
-            Filter("longitude", "=", longitude),
+            Filter("country", "=", country),
         ]
-        return self._query(filters, revoked)
+        return [item for item in self._query(filters) if hasattr(item, "administrative_area")]
 
-    def locations_by_coordinates(self, latitude, longitude, revoked=False) -> list:
+    def administrative_area(self, country: str, area: str) -> list[Location]:
+        country = country.upper()
+        area = area.upper()
+
+        if country == "US":
+            area = f"{country}-{area}"
+
         filters = [
             Filter("type", "=", "location"),
-            Filter("latitude", "=", latitude),
-            Filter("longitude", "=", longitude),
+            Filter("country", "=", country),
+            Filter("administrative_area", "=", area),
         ]
-        return self._query(filters, revoked)
-
-    def locations_by_precision(self, precision, revoked=False) -> list:
-        filters = [
-            Filter("type", "=", "location"),
-            Filter("precision", "=", precision),
-        ]
-        return self._query(filters, revoked)
-
-    def locations_by_country(self, country, revoked=False) -> list:
-        filters = [
-            Filter("type", "=", "location"),
-            Filter("country", "=", country, case_insensitive=True),
-        ]
-        return self._query(filters, revoked)
-
-    def locations_by_administrative_area(self, administrative_area, revoked=False) -> list:
-        filters = [
-            Filter("type", "=", "location"),
-            Filter("administrative_area", "=", administrative_area, case_insensitive=True),
-        ]
-        return self._query(filters, revoked)
-
-    def locations_by_city(self, city, revoked=False) -> list:
-        filters = [
-            Filter("type", "=", "location"),
-            Filter("city", "=", city, case_insensitive=True),
-        ]
-        return self._query(filters, revoked)
-
-    def locations_by_street_address(self, street_address, revoked=False) -> list:
-        filters = [
-            Filter("type", "=", "location"),
-            Filter("street_address", "=", street_address, case_insensitive=True),
-        ]
-        return self._query(filters, revoked)
-
-    def locations_by_postal_code(self, postal_code, revoked=False) -> list:
-        filters = [
-            Filter("type", "=", "location"),
-            Filter("postal_code", "=", postal_code),
-        ]
-        return self._query(filters, revoked)
+        return self._query_one(filters)
