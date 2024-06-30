@@ -1,4 +1,4 @@
-from stix2.v21.observables import (
+from stix2.v21.observables import (  # noqa: F401
     ACCOUNT_TYPE,
     ENCRYPTION_ALGORITHM,
     HASHING_ALGORITHM,
@@ -11,7 +11,7 @@ from stix2.v21.observables import (
     WINDOWS_SERVICE_STATUS,
     WINDOWS_SERVICE_TYPE,
 )
-from stix2.v21.sdo import (
+from stix2.v21.sdo import (  # noqa: F401
     ATTACK_MOTIVATION,
     ATTACK_RESOURCE_LEVEL,
     GROUPING_CONTEXT,
