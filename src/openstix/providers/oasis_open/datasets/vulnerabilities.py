@@ -11,15 +11,6 @@ class Vulnerabilities(Dataset):
         ],
     )
 
-    def search(self, query):
-        return self._search(
-            [
-                Filter("name", "contains", query),
-                Filter("description", "contains", query),
-                Filter("external_references", "contains", query),
-            ]
-        )
-
     def vulnerabilities(self) -> list:
         filters = [Filter("type", "=", "vulnerability")]
         return self._query(filters)

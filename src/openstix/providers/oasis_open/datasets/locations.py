@@ -12,23 +12,6 @@ class Locations(Dataset):
         ],
     )
 
-    def search(self, query):
-        return self._search(
-            [
-                Filter("name", "contains", query),
-                Filter("description", "contains", query),
-                Filter("latitude", "contains", query),
-                Filter("longitude", "contains", query),
-                Filter("precision", "contains", query),
-                Filter("region", "contains", query),
-                Filter("country", "contains", query),
-                Filter("administrative_area", "contains", query),
-                Filter("city", "contains", query),
-                Filter("street_address", "contains", query),
-                Filter("postal_code", "contains", query),
-            ]
-        )
-
     def regions(self) -> list[Location]:
         filters = [
             Filter("type", "=", "location"),

@@ -12,18 +12,6 @@ class Industries(Dataset):
         ],
     )
 
-    def search(self, query):
-        return self._search(
-            [
-                Filter("name", "contains", query),
-                Filter("description", "contains", query),
-                Filter("roles", "contains", query),
-                Filter("identity_class", "contains", query),
-                Filter("sectors", "contains", query),
-                Filter("contact_information", "contains", query),
-            ],
-        )
-
     def sectors(self) -> list[Identity]:
         filters = [
             Filter("type", "=", "identity"),
