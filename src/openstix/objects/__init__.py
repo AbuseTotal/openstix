@@ -1,11 +1,12 @@
-from stix2.v21.bundle import Bundle
-from stix2.v21.common import (
+from stix2.v21.bundle import Bundle  # noqa: F401
+from stix2.v21.common import (  # noqa: F401
+    GranularMarking,
     LanguageContent,
     MarkingDefinition,
     StatementMarking,
     TLPMarking,
 )
-from stix2.v21.observables import (
+from stix2.v21.observables import (  # noqa: F401
     URL,
     Artifact,
     AutonomousSystem,
@@ -25,7 +26,7 @@ from stix2.v21.observables import (
     WindowsRegistryKey,
     X509Certificate,
 )
-from stix2.v21.sdo import (
+from stix2.v21.sdo import (  # noqa: F401
     AttackPattern,
     Campaign,
     CourseOfAction,
@@ -46,9 +47,9 @@ from stix2.v21.sdo import (
     Tool,
     Vulnerability,
 )
-from stix2.v21.sro import (
+from stix2.v21.sro import (  # noqa: F401
     Relationship,
     Sighting,
 )
 
-from openstix.objects import custom
+from openstix.objects import custom  # noqa: F401

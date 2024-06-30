@@ -20,6 +20,9 @@ def load_objects_mappings(module):
             SMOS_MAPPING[object_class._type] = object_class
             continue
 
+        if object_class_name in ["GranularMarking"]:
+            continue
+
         mapping_type = get_object_type(object_class._type)
 
         if mapping_type == "sco":
