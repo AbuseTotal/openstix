@@ -29,14 +29,14 @@ def get_datasets() -> list[Dataset]:
 
 
 def download(provider=None, dataset=None):
-    for ds in get_datasets():
-        if provider and ds.config.provider != provider:
+    for item in get_datasets():
+        if provider and item.config.provider != provider:
             continue
 
-        if dataset and ds.config.name != dataset:
+        if dataset and item.config.name != dataset:
             continue
 
-        urls = resolve_urls(ds.config.urls)
+        urls = resolve_urls(item.config.urls)
 
         for url in urls:
             response = requests.get(url)
@@ -47,7 +47,7 @@ def download(provider=None, dataset=None):
                 continue
 
             bundle = parse(response.text, allow_custom=True)
-            save_to_repository(bundle, ds)
+            save_to_repository(bundle, item)
 
 
 def resolve_urls(urls: list[str]) -> list[str]:
