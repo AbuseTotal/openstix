@@ -1,4 +1,4 @@
-from stix2.properties import (
+from stix2.properties import (  # noqa: F401
     BinaryProperty,
     BooleanProperty,
     DictionaryProperty,
@@ -24,4 +24,4 @@ from stix2.properties import (
     TypeProperty,
 )
 
-from openstix.properties import types
+from openstix.properties import types  # noqa: F401

@@ -3,13 +3,14 @@ from pathlib import Path
 import requests
 
 from openstix import OPENSTIX_PATH, providers
+from openstix.providers._base import Dataset
 from openstix.toolkit.exceptions import DataSourceError
 from openstix.toolkit.sinks import FileSystemSink
 from openstix.utils import parse
 
 
-def get_datasets():
-    datasets = []
+def get_datasets() -> list[Dataset]:
+    datasets: list[Dataset] = []
 
     for provider_name in dir(providers):
         if provider_name.startswith("_"):
@@ -21,20 +22,24 @@ def get_datasets():
             if dataset_name.startswith("_") or dataset_name.islower():
                 continue
 
-            dataset = getattr(provider, dataset_name)
+            dataset: Dataset = getattr(provider, dataset_name)
             datasets.append(dataset)
 
     return datasets
 
 
-def download(provider=None):
-    for dataset in get_datasets():
-        if provider and dataset.config.provider != provider:
+def download(provider=None, dataset=None):
+    for item in get_datasets():
+        if provider and item.config.provider != provider:
             continue
 
-        for url in dataset.config.urls:
-            response = requests.get(url)
+        if dataset and item.config.name != dataset:
+            continue
 
+        urls = resolve_urls(item.config.urls)
+
+        for url in urls:
+            response = requests.get(url)
             print(f"Processing {url}")
 
             if not response.ok:
@@ -42,20 +47,39 @@ def download(provider=None):
                 continue
 
             bundle = parse(response.text, allow_custom=True)
+            save_to_repository(bundle, item)
 
-            path = Path(OPENSTIX_PATH) / dataset.config.provider / dataset.config.name
-            path.mkdir(parents=True, exist_ok=True)
 
-            repository = FileSystemSink(
-                stix_dir=path,
-                allow_custom=True,
-            )
+def resolve_urls(urls: list[str]) -> list[str]:
+    """Resolve URLs, handling potential redirects and API responses."""
+    resolved_urls: list[str] = []
+    for url in urls:
+        if url.startswith("https://raw."):
+            resolved_urls.append(url)
+        else:
+            response = requests.get(url)
+            if response.ok:
+                for item in response.json():
+                    resolved_urls.append(item["download_url"])
 
-            for stix_object in bundle.objects:
-                if isinstance(stix_object, dict):
-                    continue
+    return resolved_urls
 
-                try:
-                    repository.add(stix_object)
-                except DataSourceError as e:
-                    print(f"{e}. Skipping ...")
+
+def save_to_repository(bundle, dataset: Dataset):
+    """Save the STIX objects to the local repository."""
+    path = Path(OPENSTIX_PATH) / dataset.config.provider / dataset.config.name
+    path.mkdir(parents=True, exist_ok=True)
+
+    repository = FileSystemSink(
+        stix_dir=path,
+        allow_custom=True,
+    )
+
+    for stix_object in bundle.objects:
+        if isinstance(stix_object, dict):
+            continue
+
+        try:
+            repository.add(stix_object)
+        except DataSourceError as e:
+            print(f"{e}. Skipping ...")
