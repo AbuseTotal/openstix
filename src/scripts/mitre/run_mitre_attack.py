@@ -14,6 +14,9 @@ mitre_attack = MITREAttack(
         allow_custom=True,
     ),
 )
+mitre_attack.intrusion_set("red delta")
+mitre_attack.intrusion_set("Ke3Chang")
+mitre_attack.intrusion_set("metushy")
 
 print("MITRE ATT&CK Dataset loaded.")
 

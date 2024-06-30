@@ -97,15 +97,6 @@ class MITRE(Dataset):
         return self._query_name_and_alias(filters=[MITRE_ASSET_FILTER], name=name, aliases=aliases)
 
 
-def common_filters(query: str) -> list[Filter]:
-    return [
-        Filter("name", "contains", query),
-        Filter("description", "contains", query),
-        Filter("labels", "contains", query),
-        Filter("aliases", "contains", query),
-    ]
-
-
 class MITREAttack(MITRE):
     config = DatasetConfig(
         provider="mitre",
@@ -116,15 +107,6 @@ class MITREAttack(MITRE):
             "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/ics-attack/ics-attack.json",
         ],
     )
-
-    def search(self, query):
-        filters = common_filters(query) + [
-            Filter("x_mitre_aliases", "contains", query),
-            Filter("x_mitre_domains", "contains", query),
-            Filter("x_mitre_platforms", "contains", query),
-        ]
-
-        return self.search(filters)
 
     def techniques(self) -> list:
         filters = [
@@ -143,18 +125,6 @@ class MITRECapec(MITRE):
         ],
     )
 
-    def search(self, query):
-        filters = common_filters(query) + [
-            Filter("x_capec_status", "contains", query),
-            Filter("x_capec_domains", "contains", query),
-            Filter("x_capec_abstraction", "contains", query),
-            Filter("x_capec_consequences", "contains", query),
-            Filter("x_capec_prerequisites", "contains", query),
-            Filter("x_capec_resources_required", "contains", query),
-        ]
-
-        return self.search(filters)
-
     def techniques(self) -> list:
         filters = [
             ATTACK_PATTERN_FILTER,
@@ -172,13 +142,6 @@ class MITREAtlas(MITRE):
             "https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/main/dist/stix-atlas.json",
         ],
     )
-
-    def search(self, query):
-        filters = common_filters(query) + [
-            Filter("x_mitre_shortname", "contains", query),
-        ]
-
-        return self.search(filters)
 
     def techniques(self) -> list:
         filters = [

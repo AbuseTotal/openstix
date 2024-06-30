@@ -1,1 +1,1 @@
-from openstix.providers import mitre, oasis_open  # noqa: F401
+from openstix.providers import abusetotal, mitre, oasis_open  # noqa: F401
