@@ -1,4 +1,4 @@
-from openstix.mappings.base import (
+from openstix.mappings.base import (  # noqa: F401
     SCOS_MAPPING,
     SDOS_MAPPING,
     SMOS_MAPPING,

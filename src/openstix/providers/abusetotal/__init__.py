@@ -1,1 +1,1 @@
-from openstix.providers.abusetotal import objects
+from openstix.providers.abusetotal import objects  # noqa: F401
