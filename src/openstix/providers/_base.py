@@ -1,44 +1,32 @@
-import os
 import uuid
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Literal, Union
+from typing import Literal
 from zipfile import ZipFile
 
 from pydantic import BaseModel
 from stix2 import MemoryStore
 import requests
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 from stix2 import Bundle
 
 from openstix.constants import OPENSTIX_PATH
 from openstix.filters import Filter
 from openstix.toolkit import Environment
+from openstix.toolkit.exceptions import DataSourceError
+from openstix.toolkit.sinks import FileSystemSink
 from openstix.toolkit.sources import DataSource
-from openstix.utils import parse
 
 
-class JSONSourceConfig(BaseModel):
-    type: Literal["json"]
+class SourceConfig(BaseModel):
+    type: Literal["github_api", "json", "zip"]
     url: str
-
-
-class ZIPSourceConfig(BaseModel):
-    type: Literal["zip"]
-    url: str
-
-
-class GitHubAPISourceConfig(BaseModel):
-    type: Literal["github_api"]
-    url: str
-    paths: list[str]
+    paths: list[str] = None
 
 
 class DatasetConfig(BaseModel):
     name: str
-    sources: list[Union[JSONSourceConfig, ZIPSourceConfig, GitHubAPISourceConfig]]
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    sources: list[SourceConfig]
 
 
 class ProviderConfig(BaseModel):
@@ -47,31 +35,26 @@ class ProviderConfig(BaseModel):
 
 
 class Downloader(ABC):
-    def __init__(self, url):
-        self.url = url
+    def __init__(self, provider: str, config: SourceConfig):
+        self.url = config.url
+
+        provider_path = Path(OPENSTIX_PATH) / provider
+        provider_path.mkdir(parents=True, exist_ok=True)
+
+        self.sink = FileSystemSink(
+            stix_dir=provider_path,
+            allow_custom=True,
+        )
 
     @abstractmethod
     def process(self):
         pass
 
-    # def save_bundle(self, bundle: Bundle, dataset: Dataset) -> None:
-    #     """Save the STIX objects to the local repository."""
-    #     path = Path(OPENSTIX_PATH) / dataset.config.provider / dataset.config.name
-    #     path.mkdir(parents=True, exist_ok=True)
-
-    #     repository = FileSystemSink(
-    #         stix_dir=path,
-    #         allow_custom=True,
-    #     )
-
-    #     for stix_object in bundle.objects:
-    #         if isinstance(stix_object, dict):
-    #             continue
-
-    #         try:
-    #             repository.add(stix_object)
-    #         except DataSourceError as e:
-    #             print(f"{e}. Skipping ...")
+    def save(self, bundle: Bundle) -> None:
+        try:
+            self.sink.add(bundle)
+        except DataSourceError as e:
+            print(f"{e}. Skipping ...")
 
 
 class JSONDownloader(Downloader):
@@ -80,35 +63,28 @@ class JSONDownloader(Downloader):
 
         if not response.ok:
             print(f"Failed to download JSON from {self.url}")
-            return Bundle()
+            return
 
-        return parse(response.text, allow_custom=True)
+        self.save(response.text)
 
 
 class GitHubFolderDownloader(Downloader):
-    def __init__(self, config: GitHubAPISourceConfig):
-        super().__init__()
-
     def process(self):
         pass
 
 
 class ZIPDownloader(Downloader):
-    def __init__(self, config: JSONSourceConfig):
-        self.root = os.path.join(OPENSTIX_PATH, "tmp", str(uuid.uuid4()))
+    def __init__(self, provider: str, config: SourceConfig):
+        self.root = Path(OPENSTIX_PATH) / "tmp" / str(uuid.uuid4())
+        self.files_path = Path(self.root) / "files"
 
-        self.zip_path = os.path.join(self.root, "original.zip")
-        self.files_path = os.path.join(self.root, "files")
+        self.root.mkdir(parents=True, exist_ok=True)
+        self.files_path.mkdir(parents=True, exist_ok=True)
 
-        self.paths = []
-        for content_path in config.paths:
-            path = os.path.join(self.files_path, content_path)
-            self.paths.append(path)
+        self.zip_path = Path(self.root) / "original.zip"
+        self.content_paths = config.paths
 
-        Path(self.root).mkdir(parents=True, exist_ok=True)
-        Path(self.files_path).mkdir(parents=True, exist_ok=True)
-
-        super().__init__(config.url)
+        super().__init__(provider, config)
 
     def process(self):
         self._download()
@@ -124,18 +100,20 @@ class ZIPDownloader(Downloader):
 
     def _extract(self):
         with ZipFile(self.zip_path, "r") as zip_ref:
-            zip_ref.extractall(self.files_path)
+            zip_ref.extractall(path=self.files_path)
 
     def _load(self):
-        for content_path in self.paths:
-            _, _, files = next(os.walk(content_path))
+        folder = [f for f in self.files_path.iterdir() if f.is_dir()][0]
 
-            for file in files:
-                file_path = os.path.join(content_path, file)
+        for content_path in self.content_paths:
+            content_path = self.files_path / folder / content_path
 
-                with open(file_path, "r") as f:
-                    print(f"Processing file: {file_path}")
-                    print(f.read())  # Replace this with actual processing logic
+            for file in content_path.iterdir():
+                if not file.is_file():
+                    continue
+
+                with file.open("r") as fp:
+                    self.save(fp.read())
 
 
 class Dataset(ABC):
@@ -171,3 +149,10 @@ class Dataset(ABC):
             filters += [Filter("aliases", "contains", name)]
 
         return self._query_one(filters)
+
+
+SOURCE_CONFIGS_MAPPING = {
+    "json": JSONDownloader,
+    "github_api": GitHubFolderDownloader,
+    "zip": ZIPDownloader,
+}

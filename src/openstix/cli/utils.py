@@ -1,32 +1,29 @@
 import inspect
 
 from openstix import providers
-from openstix.providers._base import Dataset
 
 
-def get_dataset_classes():
-    dataset_classes = []
+def get_configs():
+    configs = []
+
     for _, provider in inspect.getmembers(providers, inspect.ismodule):
-        if not hasattr(provider, "datasets"):
+        if not hasattr(provider, "config"):
             continue
 
-        for _, dataset in inspect.getmembers(provider.datasets):
-            if inspect.isclass(dataset) and issubclass(dataset, Dataset) and dataset is not Dataset:
-                dataset_classes.append(dataset)
+        configs.append(provider.config.CONFIG)
 
-    return dataset_classes
+    return configs
 
 
 def process(provider=None, dataset=None):
-    for dataset_class in get_dataset_classes():
-        if not hasattr(dataset_class, "config"):
+    for config in get_configs():
+        if provider and provider != config.name:
             continue
 
-        if provider and provider != dataset_class.config.provider:
-            continue
+        for dataset_config in config.datasets:
+            if dataset and dataset != dataset_config.name:
+                continue
 
-        if dataset and dataset != dataset_class.config.name:
-            continue
-
-        for downloader in dataset_class.config.downloaders:
-            downloader.process()
+            for source in dataset_config.sources:
+                downloader = providers.SOURCE_CONFIGS_MAPPING.get(source.type)
+                downloader(config.name, source).process()
