@@ -1,16 +1,8 @@
 from openstix.filters import Filter
-from openstix.providers._base import Dataset, DatasetConfig
+from openstix.providers._base import Dataset
 
 
 class Vulnerabilities(Dataset):
-    config = DatasetConfig(
-        provider="oasis-open",
-        name="vulnerabilities",
-        urls=[
-            "https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/vulnerability",
-        ],
-    )
-
     def vulnerabilities(self) -> list:
         filters = [Filter("type", "=", "vulnerability")]
         return self._query(filters)

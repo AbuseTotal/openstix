@@ -1,5 +1,5 @@
 from openstix.filters import Filter
-from openstix.providers._base import Dataset, DatasetConfig
+from openstix.providers._base import Dataset
 
 VALID_TLPs = [
     "CLEAR",
@@ -11,14 +11,6 @@ VALID_TLPs = [
 
 
 class TLP20(Dataset):
-    config = DatasetConfig(
-        provider="oasis-open",
-        name="tlp20",
-        urls=[
-            "https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/marking-definition",
-        ],
-    )
-
     def get_tlp(self, color):
         color = color.upper()
 

@@ -1,17 +1,9 @@
 from openstix.filters import Filter
 from openstix.objects import Location
-from openstix.providers._base import Dataset, DatasetConfig
+from openstix.providers._base import Dataset
 
 
 class Locations(Dataset):
-    config = DatasetConfig(
-        provider="oasis-open",
-        name="locations",
-        urls=[
-            "https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/location",
-        ],
-    )
-
     def regions(self) -> list[Location]:
         filters = [
             Filter("type", "=", "location"),

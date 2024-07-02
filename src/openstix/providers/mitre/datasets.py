@@ -1,3 +1,5 @@
+from typing import Literal
+
 from openstix.filters import Filter
 from openstix.filters.presets import (
     ATTACK_PATTERN_FILTER,
@@ -8,7 +10,7 @@ from openstix.filters.presets import (
     SOFTWARE_FILTER,
     TOOL_FILTER,
 )
-from openstix.providers._base import Dataset, DatasetConfig
+from openstix.providers._base import Dataset
 from openstix.providers.mitre.presets import (
     MITRE_ASSET_FILTER,
     MITRE_DATA_COMPONENT_FILTER,
@@ -19,8 +21,18 @@ from openstix.providers.mitre.presets import (
 
 
 class MITRE(Dataset):
-    def techniques(self) -> list:
+    def techniques(self, model: Literal["attack", "capec", "atlas"] = None) -> list:
         filters = [ATTACK_PATTERN_FILTER]
+
+        if model and model == "attack":
+            filters += Filter("external_references.source_name", "=", "mitre-attack")
+
+        if model and model == "capec":
+            filters += Filter("external_references.source_name", "=", "capec")
+
+        if model and model == "atlas":
+            filters += Filter("external_references.source_name", "=", "mitre-atlas")
+
         return self._query(filters)
 
     def technique(self, external_id):
@@ -95,57 +107,3 @@ class MITRE(Dataset):
 
     def asset(self, name, aliases=False):
         return self._query_name_and_alias(filters=[MITRE_ASSET_FILTER], name=name, aliases=aliases)
-
-
-class MITREAttack(MITRE):
-    config = DatasetConfig(
-        provider="mitre",
-        name="attack",
-        urls=[
-            "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/enterprise-attack/enterprise-attack.json",
-            "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/mobile-attack/mobile-attack.json",
-            "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/master/ics-attack/ics-attack.json",
-        ],
-    )
-
-    def techniques(self) -> list:
-        filters = [
-            ATTACK_PATTERN_FILTER,
-            Filter("external_references.source_name", "=", "mitre-attack"),
-        ]
-        return self._query(filters)
-
-
-class MITRECapec(MITRE):
-    config = DatasetConfig(
-        provider="mitre",
-        name="capec",
-        urls=[
-            "https://raw.githubusercontent.com/mitre/cti/master/capec/2.1/stix-capec.json",
-        ],
-    )
-
-    def techniques(self) -> list:
-        filters = [
-            ATTACK_PATTERN_FILTER,
-            Filter("external_references.source_name", "=", "capec"),
-        ]
-        return self._query(filters)
-
-
-class MITREAtlas(MITRE):
-    config = DatasetConfig(
-        provider="mitre",
-        name="atlas",
-        urls=[
-            "https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/main/dist/stix-atlas-attack-enterprise.json",
-            "https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/main/dist/stix-atlas.json",
-        ],
-    )
-
-    def techniques(self) -> list:
-        filters = [
-            ATTACK_PATTERN_FILTER,
-            Filter("external_references.source_name", "=", "mitre-atlas"),
-        ]
-        return self._query(filters)

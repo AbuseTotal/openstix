@@ -32,7 +32,7 @@ def download(ctx, provider, dataset, download_all):
         click.echo(ctx.get_help())
         ctx.exit(1)
 
-    utils.download(provider, dataset)
+    utils.process(provider, dataset)
 
 
 cli.add_command(datasets)
