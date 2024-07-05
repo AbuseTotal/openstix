@@ -1,6 +1,7 @@
 from stix2 import Environment, MemoryStore
 
 from openstix import utils
+from openstix.filters import Filter
 from openstix.objects import Bundle
 
 
@@ -86,6 +87,47 @@ class Workspace(Environment):
                     yield obj
 
         return list(get_last_version_objects())
+
+    # TO DO: Need to validate the need of _query(), it seems that it should be a bypass to environment. _query_one should be renamed to get() or something similar.
+    def query_one(self, filters=None):
+        """Executes a query against the store to retrieve a single STIX object.
+
+        Args:
+        ----
+            filters (Optional[List], optional): A list of filters representing the query. Defaults to None.
+
+        Returns:
+        -------
+            stix2.base._STIXBase: The STIX object that matches the query criteria. If no object is found, returns None.
+        """
+        filters = filters if filters else []
+
+        objects = self.query(filters)
+
+        if objects:
+            return objects[0]
+
+        return None
+
+    def query_name_and_alias(self, name, filters=None, aliases=True):
+        """Queries the store for a STIX object by name and aliases.
+
+        Args:
+        ----
+            name (str): The name of the STIX object to be queried.
+            filters (Optional[List], optional): A list of filters representing the query. Defaults to None.
+            aliases (bool, optional): Whether to include aliases in the query. Defaults to True.
+
+        Returns:
+        -------
+            stix2.base._STIXBase: The STIX object that matches the query criteria. If no object is found, returns None.
+        """
+        filters += [Filter("name", "=", name)]
+
+        if aliases:
+            filters += [Filter("aliases", "contains", name)]
+
+        return self.query_one(filters)
 
     def remove(self, object_id):
         """Removes an object, along with all its versions, from the store.

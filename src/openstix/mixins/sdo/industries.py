@@ -1,9 +1,8 @@
-from openstix.filters import Filter
+
 from openstix.objects import Identity
-from openstix.providers._base import Dataset
+from openstix.filters import Filter
 
-
-class Industries(Dataset):
+class IndustriesMixin:
     def sectors(self) -> list[Identity]:
         filters = [
             Filter("type", "=", "identity"),

@@ -7,7 +7,7 @@ CONFIG = ProviderConfig(
             name="locations",
             sources=[
                 SourceConfig(
-                    type="json",
+                    type="github_api",
                     url="https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/location",
                 ),
             ],
@@ -16,7 +16,7 @@ CONFIG = ProviderConfig(
             name="industries",
             sources=[
                 SourceConfig(
-                    type="json",
+                    type="github_api",
                     url="https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/identity",
                 ),
             ],
@@ -35,7 +35,7 @@ CONFIG = ProviderConfig(
             name="tlp20",
             sources=[
                 SourceConfig(
-                    type="json",
+                    type="github_api",
                     url="https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/marking-definition",
                 ),
             ],

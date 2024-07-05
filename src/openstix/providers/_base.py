@@ -1,3 +1,5 @@
+import os
+import tempfile
 import uuid
 from abc import ABC, abstractmethod
 from pathlib import Path
@@ -9,6 +11,7 @@ from stix2 import MemoryStore
 import requests
 from pydantic import BaseModel
 from stix2 import Bundle
+from tqdm import tqdm
 
 from openstix.constants import OPENSTIX_PATH
 from openstix.filters import Filter
@@ -59,13 +62,36 @@ class Downloader(ABC):
 
 class JSONDownloader(Downloader):
     def process(self) -> Bundle:
-        response = requests.get(self.url)
+        response = requests.get(self.url, stream=True)
 
         if not response.ok:
             print(f"Failed to download JSON from {self.url}")
             return
 
-        self.save(response.text)
+        total_size = int(response.headers.get("content-length", 0))
+        chunk_size = 1024
+
+        with tempfile.NamedTemporaryFile(delete=False, mode="w+b") as temp_file:
+            for chunk in tqdm(
+                response.iter_content(chunk_size=chunk_size),
+                total=total_size // chunk_size,
+                unit="kB",
+                unit_divisor=1024,
+                miniters=1,
+                desc="Downloading JSON",
+            ):
+                temp_file.write(chunk)
+
+            temp_file_path = temp_file.name
+
+        try:
+            with open(temp_file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            bundle = self.save(content)
+            return bundle
+        finally:
+            os.remove(temp_file_path)
 
 
 class GitHubFolderDownloader(Downloader):
