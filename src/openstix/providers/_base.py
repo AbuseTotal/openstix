@@ -14,11 +14,8 @@ from stix2 import Bundle
 from tqdm import tqdm
 
 from openstix.constants import OPENSTIX_PATH
-from openstix.filters import Filter
-from openstix.toolkit import Environment
 from openstix.toolkit.exceptions import DataSourceError
 from openstix.toolkit.sinks import FileSystemSink
-from openstix.toolkit.sources import DataSource
 
 
 class SourceConfig(BaseModel):
@@ -96,7 +93,53 @@ class JSONDownloader(Downloader):
 
 class GitHubFolderDownloader(Downloader):
     def process(self):
-        pass
+        response = requests.get(self.url)
+
+        if not response.ok:
+            print(f"Failed to fetch data from {self.url}")
+            return
+
+        data = response.json()
+
+        if not isinstance(data, list):
+            print(f"Unexpected data format from {self.url}")
+            return
+
+        download_urls = [item["download_url"] for item in data if "download_url" in item]
+
+        for url in download_urls:
+            self.download_file(url)
+
+    def download_file(self, url):
+        response = requests.get(url, stream=True)
+
+        if not response.ok:
+            print(f"Failed to download file from {url}")
+            return
+
+        total_size = int(response.headers.get("content-length", 0))
+        chunk_size = 1024
+
+        with tempfile.NamedTemporaryFile(delete=False, mode="w+b") as temp_file:
+            for chunk in tqdm(
+                response.iter_content(chunk_size=chunk_size),
+                total=total_size // chunk_size,
+                unit="kB",
+                unit_divisor=1024,
+                miniters=1,
+                desc=f"Downloading {os.path.basename(url)}",
+            ):
+                temp_file.write(chunk)
+
+            temp_file_path = temp_file.name
+
+        try:
+            with open(temp_file_path, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            self.save(content)
+        finally:
+            os.remove(temp_file_path)
 
 
 class ZIPDownloader(Downloader):
@@ -120,16 +163,37 @@ class ZIPDownloader(Downloader):
     def _download(self):
         with requests.get(self.url, stream=True) as r:
             r.raise_for_status()
+            total_size = int(r.headers.get("content-length", 0))
+            chunk_size = 8192
+
             with open(self.zip_path, "wb") as f:
-                for chunk in r.iter_content(chunk_size=8192):
+                for chunk in tqdm(
+                    r.iter_content(chunk_size=chunk_size),
+                    total=total_size // chunk_size,
+                    unit="kB",
+                    unit_divisor=1024,
+                    miniters=1,
+                    desc="Downloading ZIP",
+                ):
                     f.write(chunk)
 
     def _extract(self):
         with ZipFile(self.zip_path, "r") as zip_ref:
-            zip_ref.extractall(path=self.files_path)
+            total_files = len(zip_ref.namelist())
+            with tqdm(total=total_files, unit="files", desc="Extracting ZIP") as pbar:
+                for file in zip_ref.namelist():
+                    zip_ref.extract(file, path=self.files_path)
+                    pbar.update(1)
 
     def _load(self):
         folder = [f for f in self.files_path.iterdir() if f.is_dir()][0]
+        total_files = sum(
+            1
+            for content_path in self.content_paths
+            for file in (self.files_path / folder / content_path).iterdir()
+            if file.is_file()
+        )
+        saved_files = 0
 
         for content_path in self.content_paths:
             content_path = self.files_path / folder / content_path
@@ -140,41 +204,8 @@ class ZIPDownloader(Downloader):
 
                 with file.open("r") as fp:
                     self.save(fp.read())
-
-
-class Dataset(ABC):
-    config: DatasetConfig
-
-    def __init__(self, source: DataSource):
-        self.environment = Environment(source=source)
-        self.cache = MemoryStore()
-
-    def _query(self, filters=None):
-        filters = filters if filters else []
-        return self.environment.query(filters)
-
-    def _query_one(self, filters=None):
-        filters: list[Filter] = filters if filters else []
-
-        cached_objects = self.cache.query(filters)
-        if cached_objects:
-            return cached_objects[0]
-
-        objects = self._query(filters)
-        if objects:
-            obj = objects[0]
-            self.cache.add([obj])
-            return obj
-
-        return None
-
-    def _query_name_and_alias(self, filters, name, aliases=True):
-        filters += [Filter("name", "=", name)]
-
-        if aliases:
-            filters += [Filter("aliases", "contains", name)]
-
-        return self._query_one(filters)
+                    saved_files += 1
+                    print(f"Saved {saved_files}/{total_files} files")
 
 
 SOURCE_CONFIGS_MAPPING = {
