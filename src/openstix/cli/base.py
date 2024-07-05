@@ -35,4 +35,11 @@ def download(ctx, provider, dataset, download_all):
     utils.process(provider, dataset)
 
 
+@datasets.command(help="Sync datasets to a TAXII server or a directory.")
+@click.option("--source", required=True, help="The source dataset to sync.")
+@click.option("--sink", required=True, help="The TAXII server or directory to sync to.")
+def sync(source, sink):
+    utils.sync(source, sink)
+
+
 cli.add_command(datasets)
