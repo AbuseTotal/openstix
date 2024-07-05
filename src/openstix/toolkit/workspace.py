@@ -3,6 +3,7 @@ from stix2 import Environment, MemoryStore
 from openstix import utils
 from openstix.filters import Filter
 from openstix.objects import Bundle
+from openstix.toolkit.utils import generate_possibilities
 
 
 class Workspace(Environment):
@@ -88,8 +89,7 @@ class Workspace(Environment):
 
         return list(get_last_version_objects())
 
-    # TO DO: Need to validate the need of _query(), it seems that it should be a bypass to environment. _query_one should be renamed to get() or something similar.
-    def query_one(self, filters=None):
+    def get(self, filters=None):
         """Executes a query against the store to retrieve a single STIX object.
 
         Args:
@@ -122,12 +122,15 @@ class Workspace(Environment):
         -------
             stix2.base._STIXBase: The STIX object that matches the query criteria. If no object is found, returns None.
         """
-        filters += [Filter("name", "=", name)]
+        possibilities = generate_possibilities(name)
 
-        if aliases:
-            filters += [Filter("aliases", "contains", name)]
+        name_filter = (filters or []) + [Filter("name", "in", possibilities)]
+        result = self.get(name_filter)
+        if not result and aliases:
+            aliases_filter = (filters or []) + [Filter("aliases", "in", possibilities)]
+            result = self.get(aliases_filter)
 
-        return self.query_one(filters)
+        return result
 
     def remove(self, object_id):
         """Removes an object, along with all its versions, from the store.
