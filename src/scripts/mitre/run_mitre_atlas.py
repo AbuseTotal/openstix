@@ -1,24 +1,38 @@
 import os
 
-from openstix import OPENSTIX_PATH
-from openstix.providers.mitre import MITREAtlas
-from openstix.toolkit.sources import FileSystemSource
+from stix2 import Environment
 
-mitre_atlas = MITREAtlas(
+from openstix import OPENSTIX_PATH
+from openstix.providers.mitre.workspace import MITREWorkspace
+from openstix.toolkit.sinks import FileSystemSink
+from openstix.toolkit.sources import FileSystemSource
+from openstix.toolkit.stores import MemoryStore
+
+enviroment = Environment(
     source=FileSystemSource(
         stix_dir=os.path.join(
             OPENSTIX_PATH,
-            MITREAtlas.config.provider,
-            MITREAtlas.config.name,
+            "mitre",
+            "atlas",
+        ),
+        allow_custom=True,
+    ),
+    sink=FileSystemSink(
+        stix_dir=os.path.join(
+            OPENSTIX_PATH,
+            "mitre",
+            "atlas",
         ),
         allow_custom=True,
     ),
 )
 
-print("MITRE Atlas Dataset loaded.")
+store = MemoryStore(
+    stix_data=enviroment.source.query(),
+)
 
-technique = mitre_atlas.technique(external_id="AML.T0003")
+workspace = MITREWorkspace(store=store)
 
-print("Search found the MITRE Atlas Technique ...")
-input("[PRESS ENTER]")
-print(technique.serialize(pretty=True))
+items = workspace.mitre.tactics()
+
+print(items[0])

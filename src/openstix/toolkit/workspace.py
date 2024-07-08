@@ -1,7 +1,9 @@
 from stix2 import Environment, MemoryStore
 
 from openstix import utils
+from openstix.filters import Filter
 from openstix.objects import Bundle
+from openstix.toolkit.utils import generate_possibilities
 
 
 class Workspace(Environment):
@@ -86,6 +88,49 @@ class Workspace(Environment):
                     yield obj
 
         return list(get_last_version_objects())
+
+    def get(self, filters=None):
+        """Executes a query against the store to retrieve a single STIX object.
+
+        Args:
+        ----
+            filters (Optional[List], optional): A list of filters representing the query. Defaults to None.
+
+        Returns:
+        -------
+            stix2.base._STIXBase: The STIX object that matches the query criteria. If no object is found, returns None.
+        """
+        filters = filters if filters else []
+
+        objects = self.query(filters)
+
+        if objects:
+            return objects[0]
+
+        return None
+
+    def query_name_and_alias(self, name, filters=None, aliases=True):
+        """Queries the store for a STIX object by name and aliases.
+
+        Args:
+        ----
+            name (str): The name of the STIX object to be queried.
+            filters (Optional[List], optional): A list of filters representing the query. Defaults to None.
+            aliases (bool, optional): Whether to include aliases in the query. Defaults to True.
+
+        Returns:
+        -------
+            stix2.base._STIXBase: The STIX object that matches the query criteria. If no object is found, returns None.
+        """
+        possibilities = generate_possibilities(name)
+
+        name_filter = (filters or []) + [Filter("name", "in", possibilities)]
+        result = self.get(name_filter)
+        if not result and aliases:
+            aliases_filter = (filters or []) + [Filter("aliases", "in", possibilities)]
+            result = self.get(aliases_filter)
+
+        return result
 
     def remove(self, object_id):
         """Removes an object, along with all its versions, from the store.

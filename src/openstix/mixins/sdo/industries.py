@@ -1,17 +1,8 @@
-from openstix.filters import Filter
+
 from openstix.objects import Identity
-from openstix.providers._base import Dataset, DatasetConfig
+from openstix.filters import Filter
 
-
-class Industries(Dataset):
-    config = DatasetConfig(
-        provider="oasis-open",
-        name="industries",
-        urls=[
-            "https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/identity",
-        ],
-    )
-
+class IndustriesMixin:
     def sectors(self) -> list[Identity]:
         filters = [
             Filter("type", "=", "identity"),

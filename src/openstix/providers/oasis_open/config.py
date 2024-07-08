@@ -1,0 +1,44 @@
+from openstix.providers._base import DatasetConfig, ProviderConfig, SourceConfig
+
+CONFIG = ProviderConfig(
+    name="oasis-open",
+    datasets=[
+        DatasetConfig(
+            name="locations",
+            sources=[
+                SourceConfig(
+                    type="github_api",
+                    url="https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/location",
+                ),
+            ],
+        ),
+        DatasetConfig(
+            name="industries",
+            sources=[
+                SourceConfig(
+                    type="github_api",
+                    url="https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/identity",
+                ),
+            ],
+        ),
+        DatasetConfig(
+            name="vulnerabilities",
+            sources=[
+                SourceConfig(
+                    type="zip",
+                    url="https://github.com/oasis-open/cti-stix-common-objects/archive/refs/heads/main.zip",
+                    paths=["objects/vulnerability"],
+                ),
+            ],
+        ),
+        DatasetConfig(
+            name="tlp20",
+            sources=[
+                SourceConfig(
+                    type="github_api",
+                    url="https://api.github.com/repos/oasis-open/cti-stix-common-objects/contents/objects/marking-definition",
+                ),
+            ],
+        ),
+    ],
+)

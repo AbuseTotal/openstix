@@ -1,85 +1,67 @@
-from pathlib import Path
+import inspect
+import os
+from urllib.parse import urlparse
 
-import requests
-
-from openstix import OPENSTIX_PATH, providers
-from openstix.providers._base import Dataset
-from openstix.toolkit.exceptions import DataSourceError
-from openstix.toolkit.sinks import FileSystemSink
-from openstix.utils import parse
+from openstix import providers
+from openstix.toolkit.sinks import FileSystemSink, TAXIICollectionSink
+from openstix.toolkit.sources import FileSystemSource, TAXIICollectionSource
 
 
-def get_datasets() -> list[Dataset]:
-    datasets: list[Dataset] = []
+def get_configs():
+    configs = []
 
-    for provider_name in dir(providers):
-        if provider_name.startswith("_"):
+    for _, provider in inspect.getmembers(providers, inspect.ismodule):
+        if not hasattr(provider, "config"):
             continue
 
-        provider = getattr(providers, provider_name)
+        configs.append(provider.config.CONFIG)
 
-        for dataset_name in dir(provider):
-            if dataset_name.startswith("_") or dataset_name.islower():
+    return configs
+
+
+def process(provider=None, dataset=None):
+    for config in get_configs():
+        if provider and provider != config.name:
+            continue
+
+        for dataset_config in config.datasets:
+            if dataset and dataset != dataset_config.name:
                 continue
 
-            dataset: Dataset = getattr(provider, dataset_name)
-            datasets.append(dataset)
-
-    return datasets
-
-
-def download(provider=None, dataset=None):
-    for item in get_datasets():
-        if provider and item.config.provider != provider:
-            continue
-
-        if dataset and item.config.name != dataset:
-            continue
-
-        urls = resolve_urls(item.config.urls)
-
-        for url in urls:
-            response = requests.get(url)
-            print(f"Processing {url}")
-
-            if not response.ok:
-                print(f"Failed to download {url}")
-                continue
-
-            bundle = parse(response.text, allow_custom=True)
-            save_to_repository(bundle, item)
+            for source in dataset_config.sources:
+                downloader = providers.SOURCE_CONFIGS_MAPPING.get(source.type)
+                downloader(config.name, source).process()
 
 
-def resolve_urls(urls: list[str]) -> list[str]:
-    """Resolve URLs, handling potential redirects and API responses."""
-    resolved_urls: list[str] = []
-    for url in urls:
-        if url.startswith("https://raw."):
-            resolved_urls.append(url)
-        else:
-            response = requests.get(url)
-            if response.ok:
-                for item in response.json():
-                    resolved_urls.append(item["download_url"])
-
-    return resolved_urls
+def is_url(path):
+    try:
+        result = urlparse(path)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
 
 
-def save_to_repository(bundle, dataset: Dataset):
-    """Save the STIX objects to the local repository."""
-    path = Path(OPENSTIX_PATH) / dataset.config.provider / dataset.config.name
-    path.mkdir(parents=True, exist_ok=True)
+def get_source(source):
+    if is_url(source):
+        return TAXIICollectionSource(collection=source)
+    elif os.path.isdir(source):
+        return FileSystemSource(stix_dir=source, allow_custom=True)
+    else:
+        raise ValueError("Source must be a valid URL or directory path.")
 
-    repository = FileSystemSink(
-        stix_dir=path,
-        allow_custom=True,
-    )
 
-    for stix_object in bundle.objects:
-        if isinstance(stix_object, dict):
-            continue
+def get_sink(sink):
+    if is_url(sink):
+        return TAXIICollectionSink(collection=sink)
+    elif os.path.isdir(sink):
+        return FileSystemSink(stix_dir=sink, allow_custom=True)
+    else:
+        raise ValueError("Sink must be a valid URL or directory path.")
 
-        try:
-            repository.add(stix_object)
-        except DataSourceError as e:
-            print(f"{e}. Skipping ...")
+
+def sync(source, sink):
+    source_store = get_source(source)
+    sink_store = get_sink(sink)
+
+    for item in source_store.query():
+        sink_store.add(item)
