@@ -2,6 +2,8 @@ import inspect
 import os
 from urllib.parse import urlparse
 
+from taxii2client import Collection
+
 from openstix import providers
 from openstix.toolkit.sinks import FileSystemSink, TAXIICollectionSink
 from openstix.toolkit.sources import FileSystemSource, TAXIICollectionSource
@@ -43,7 +45,8 @@ def is_url(path):
 
 def get_source(source):
     if is_url(source):
-        return TAXIICollectionSource(collection=source)
+        collection = Collection(source)
+        return TAXIICollectionSource(collection=collection)
     elif os.path.isdir(source):
         return FileSystemSource(stix_dir=source, allow_custom=True)
     else:
@@ -52,7 +55,8 @@ def get_source(source):
 
 def get_sink(sink):
     if is_url(sink):
-        return TAXIICollectionSink(collection=sink)
+        collection = Collection(sink)
+        return TAXIICollectionSink(collection=collection)
     elif os.path.isdir(sink):
         return FileSystemSink(stix_dir=sink, allow_custom=True)
     else:
