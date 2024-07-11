@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 from taxii2client import Collection
 
 from openstix import providers
+from openstix.objects import Bundle
 from openstix.toolkit.sinks import FileSystemSink, TAXIICollectionSink
 from openstix.toolkit.sources import FileSystemSource, TAXIICollectionSource
 
@@ -63,9 +64,15 @@ def get_sink(sink):
         raise ValueError("Sink must be a valid URL or directory path.")
 
 
-def sync(source, sink):
+def sync(source, sink, send_bundle=False):
     source_store = get_source(source)
     sink_store = get_sink(sink)
+    objects = source_store.query()
 
-    for item in source_store.query():
-        sink_store.add(item)
+    if send_bundle:
+        bundle = Bundle(objects=objects)
+        sink_store.add(bundle)
+
+    else:
+        for obj in objects:
+            sink_store.add(obj)
