@@ -1,4 +1,5 @@
 import inspect
+import json
 import os
 from urllib.parse import urlparse
 
@@ -64,6 +65,29 @@ def get_sink(sink):
         raise ValueError("Sink must be a valid URL or directory path.")
 
 
+def get_size(obj):
+    return len(json.dumps(obj))
+
+def split_objects(objects, max_size):
+    bundles = []
+    current_bundle = []
+    current_size = 0
+
+    for obj in objects:
+        obj_size = get_size(obj)
+        if current_size + obj_size > max_size:
+            bundles.append(current_bundle)
+            current_bundle = [obj]
+            current_size = obj_size
+        else:
+            current_bundle.append(obj)
+            current_size += obj_size
+
+    if current_bundle:
+        bundles.append(current_bundle)
+
+    return bundles
+
 def sync(source, sink, send_bundle=False):
     source_store = get_source(source)
     sink_store = get_sink(sink)
@@ -71,7 +95,15 @@ def sync(source, sink, send_bundle=False):
 
     if send_bundle:
         bundle = Bundle(objects=objects)
-        sink_store.add(bundle)
+        bundle_size = get_size(bundle)
+
+        if bundle_size > 100 * 1024 * 1024:  # 100MB
+            bundles = split_objects(objects, 100 * 1024 * 1024)
+            for bundle_objects in bundles:
+                small_bundle = Bundle(objects=bundle_objects)
+                sink_store.add(small_bundle)
+        else:
+            sink_store.add(bundle)
 
     else:
         for obj in objects:
