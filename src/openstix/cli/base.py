@@ -38,8 +38,11 @@ def download(ctx, provider, dataset, download_all):
 @datasets.command(help="Sync datasets to a TAXII server or a directory.")
 @click.option("--source", required=True, help="The source dataset to sync.")
 @click.option("--sink", required=True, help="The TAXII server or directory to sync to.")
-def sync(source, sink):
-    utils.sync(source, sink)
+@click.option(
+    "--send-bundle", is_flag=True, help="Send all objects as a single bundle to the sink instead of individual objects."
+)
+def sync(source, sink, send_bundle):
+    utils.sync(source, sink, send_bundle)
 
 
 cli.add_command(datasets)
