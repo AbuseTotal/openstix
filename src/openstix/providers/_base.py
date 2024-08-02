@@ -1,3 +1,4 @@
+import json
 import os
 import tempfile
 import uuid
@@ -6,11 +7,8 @@ from pathlib import Path
 from typing import Literal
 from zipfile import ZipFile
 
-from pydantic import BaseModel
-from stix2 import MemoryStore
 import requests
 from pydantic import BaseModel
-from stix2 import Bundle
 from tqdm import tqdm
 
 from openstix.constants import OPENSTIX_PATH
@@ -50,15 +48,19 @@ class Downloader(ABC):
     def process(self):
         pass
 
-    def save(self, bundle: Bundle) -> None:
+    def save(self, bundle: str) -> None:
         try:
-            self.sink.add(bundle)
+            bundle = json.loads(bundle)
+
+            bundle["objects"] = [obj for obj in bundle["objects"] if obj["type"] != "x-mitre-collection"]
+
+            self.sink.add(bundle, pretty=False)
         except DataSourceError as e:
             print(f"{e}. Skipping ...")
 
 
 class JSONDownloader(Downloader):
-    def process(self) -> Bundle:
+    def process(self):
         response = requests.get(self.url, stream=True)
 
         if not response.ok:
@@ -85,8 +87,7 @@ class JSONDownloader(Downloader):
             with open(temp_file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
-            bundle = self.save(content)
-            return bundle
+            self.save(content)
         finally:
             os.remove(temp_file_path)
 

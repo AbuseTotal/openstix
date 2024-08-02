@@ -29,7 +29,7 @@ CONFIG = ProviderConfig(
             ],
         ),
         DatasetConfig(
-            name="attack",
+            name="atlas",
             sources=[
                 SourceConfig(
                     type="json",
