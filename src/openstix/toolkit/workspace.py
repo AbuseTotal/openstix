@@ -159,7 +159,7 @@ class Workspace(Environment):
                 custom objects. Note that unknown custom objects cannot be parsed
                 into STIX objects, and will be returned as is. Default: False.
         """
-        parsed_data = utils.common.parse(data, allow_custom)
+        parsed_data = utils.parse(data, allow_custom)
         if isinstance(parsed_data, Bundle):
             self.add(parsed_data.objects)
         else:
