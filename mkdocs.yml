@@ -1,0 +1,141 @@
+site_name: OpenSTIX Documentation
+site_description: Documentation about OpenSTIX, a package that aims to make STIX easy and accessible for analysts.
+site_author: AbuseTotal
+site_url: https://openstix.abusetotal.com
+repo_name: abusetotal/openstix
+repo_url: https://github.com/abusetotal/openstix
+edit_uri: https://github.com/abusetotal/openstix/blob/main/docs/
+
+theme:
+  name: material
+  logo: assets/logo.png
+  features:
+    - navigation.tabs
+    - navigation.path
+    - navigation.footer
+    - navigation.expand
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - search.highlight
+  font:
+    text: Inter
+    code: Inter Mono
+
+extra_css:
+  - assets/css/overrides.css
+
+extra:
+  version:
+    provider: mike
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/abusetotal
+    - icon: fontawesome/brands/linkedin
+      link: https://linkedin.com/company/abusetotal
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/abusetotal
+
+plugins:
+  - mike:
+      canonical_version: latest
+  - search
+  - git-revision-date-localized:
+      enable_creation_date: true
+      type: timeago
+  - glightbox
+  - autorefs
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            docstring_options:
+              ignore_init_summary: true
+            docstring_section_style: list
+            filters: ["!^_"]
+            heading_level: 2
+            inherited_members: true
+            merge_init_into_class: true
+            parameter_headings: true
+            separate_signature: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            signature_crossrefs: true
+            
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - tables
+  - admonition
+  - def_list
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.details
+  - pymdownx.smartsymbols
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.betterem
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      use_pygments: true
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: false
+      auto_title: false
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.snippets:
+      url_download: true
+
+nav:
+  - Home: index.md
+  - Setup: pages/setup.md
+  - Library:
+    - Objects: pages/library/objects.md
+    - Extensions: pages/library/extensions.md
+    - Properties: pages/library/properties.md
+    - Utilities: pages/library/utilities.md
+  - Datasets:
+    - Overview: pages/datasets/overview.md
+    - MITRE: pages/datasets/mitre.md
+    - GeoLocation: pages/datasets/geolocation.md
+  - Workspace:
+    - Overview: pages/workspace/overview.md
+    - Basic Operations:
+      - Create objects: pages/workspace/basic/create.md
+      - Change objects: pages/workspace/basic/change.md
+      - Remove objects: pages/workspace/basic/remove.md
+    - Advanced Operations:
+      - Search objects: pages/workspace/advanced/search.md
+      - Filter objects: pages/workspace/advanced/filters.md
+      - Related objects: pages/workspace/advanced/related.md
+      - Similar objects: pages/workspace/advanced/similar.md
+  - Use Cases:
+    - Overview: pages/usecases/usecase1.md
+  - Reference:
+    - Workspace: pages/reference/workspace.md
+    - API:
+        - STIX2: pages/reference/api/stix2.md
+  - User's Guide:
+    - Introduction: users_guide/index.md
+    - Working with Workspaces: users_guide/working_with_workspace.md
