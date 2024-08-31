@@ -1,4 +1,4 @@
-from openstix.cli.base import cli
+from openstix.cli import cli
 
 if __name__ == "__main__":
     cli()

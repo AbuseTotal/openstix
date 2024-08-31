@@ -31,6 +31,4 @@ from openstix.utils import markings, patterns  # noqa: F401
 from openstix.utils.custom import (  # noqa: F401
     class_for_type,
     get_object_type,
-    object_equivalence,
-    object_similarity,
 )

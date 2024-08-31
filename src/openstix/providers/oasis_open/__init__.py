@@ -1,2 +1,1 @@
-from openstix.providers.oasis_open import config  # noqa: F401
-
+from openstix.providers.oasis_open import datasets  # noqa: F401
