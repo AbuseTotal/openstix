@@ -3,7 +3,7 @@ from stix2 import Environment, MemoryStore
 from openstix import utils
 from openstix.filters import Filter
 from openstix.objects import Bundle
-from openstix.toolkit.utils import generate_possibilities
+from openstix.utils.extras import generate_possibilities
 
 
 class Workspace(Environment):

@@ -1,4 +1,5 @@
 {
+    "version": "0.2.0",
     "configurations": [
         {
             "name": "Download All",
@@ -9,7 +10,6 @@
             "args": [
                 "datasets",
                 "download",
-                "--all",
             ],
             "justMyCode": true,
         },
@@ -27,7 +27,7 @@
             "justMyCode": true,
         },
         {
-            "name": "Download Oasis Open",
+            "name": "Download OASIS Open",
             "type": "debugpy",
             "request": "launch",
             "python": "/openstix-python/.venv/default/bin/python",
