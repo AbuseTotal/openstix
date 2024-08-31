@@ -31,7 +31,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-  "stix2>=3.0.1",
+  "stix2 @ git+https://github.com/AbuseTotal/stix2.git@master",
   "taxii2-client==2.3.0",
   "click>=8.1.7",
   "requests>=2.31.0",
@@ -53,6 +53,9 @@ openstix = "openstix.__main__:cli"
 version_scheme = "python-simplified-semver"
 local_scheme = "no-local-version"
 git_describe_command = ["git", "describe", "--dirty", "--tags", "--long", "--match", "v*"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build]
 ignore-vcs = true
@@ -77,6 +80,9 @@ dependencies = [
     "mkdocs-glightbox",
     "mkdocs_gen_files",
     "mike",
+]
+post-install-commands = [
+  "git clone https://github.com/AbuseTotal/stix2.git /openstix-python/src/stix2 > /dev/null 2>&1 || true ; pip install -e /openstix-python/src/stix2/",
 ]
 
 [tool.hatch.envs.default.scripts]
