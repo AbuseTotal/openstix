@@ -114,16 +114,17 @@ nav:
     - Overview: pages/cli/index.md
     - Datasets: pages/cli/datasets.md
   - Library:
+    - Overview: pages/library/index.md
     - Objects: pages/library/objects.md
     - Extensions: pages/library/extensions.md
     - Properties: pages/library/properties.md
     - Utilities: pages/library/utilities.md
   - Datasets:
-    - Overview: pages/datasets/overview.md
+    - Overview: pages/datasets/index.md
     - MITRE: pages/datasets/mitre.md
     - GeoLocation: pages/datasets/geolocation.md
   - Workspace:
-    - Overview: pages/workspace/overview.md
+    - Overview: pages/workspace/index.md
     - Basic Operations:
       - Create objects: pages/workspace/basic/create.md
       - Change objects: pages/workspace/basic/change.md
@@ -138,6 +139,7 @@ nav:
     - Manage Intelligence: pages/usecases/manage-intelligence.md
     - Use Datasets: pages/usecases/use-datasets.md
   - Reference:
+    - Overview: pages/reference/index.md
     - Workspace: pages/reference/workspace.md
     - API:
         - STIX2: pages/reference/api/stix2.md
