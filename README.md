@@ -19,7 +19,7 @@ pip install openstix
 
 ## Documentation
 
-Documentation is available at ...
+Documentation is available [here](https://abusetotal.github.io/openstix-python/)
 
 ## Contributing
 
