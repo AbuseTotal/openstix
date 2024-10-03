@@ -17,6 +17,10 @@
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
+         <loc>https://openstix.abusetotal.com/pages/datasets/</loc>
+         <lastmod>2024-10-03</lastmod>
+    </url>
+    <url>
          <loc>https://openstix.abusetotal.com/pages/datasets/geolocation/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
@@ -26,6 +30,10 @@
     </url>
     <url>
          <loc>https://openstix.abusetotal.com/pages/datasets/setup/</loc>
+         <lastmod>2024-10-03</lastmod>
+    </url>
+    <url>
+         <loc>https://openstix.abusetotal.com/pages/library/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
@@ -45,11 +53,19 @@
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
+         <loc>https://openstix.abusetotal.com/pages/reference/</loc>
+         <lastmod>2024-10-03</lastmod>
+    </url>
+    <url>
          <loc>https://openstix.abusetotal.com/pages/reference/workspace/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
          <loc>https://openstix.abusetotal.com/pages/reference/api/stix2/</loc>
+         <lastmod>2024-10-03</lastmod>
+    </url>
+    <url>
+         <loc>https://openstix.abusetotal.com/pages/usecases/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
@@ -61,7 +77,7 @@
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://openstix.abusetotal.com/pages/workspace/overview/</loc>
+         <loc>https://openstix.abusetotal.com/pages/workspace/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
