@@ -86,8 +86,7 @@ post-install-commands = [
 ]
 
 [tool.hatch.envs.default.scripts]
-release = "tbd"
-run = "tbd"
+docs = "mkdocs build ; mike deploy --update-aliases 0.1.8 latest ; mike set-default latest ; mike serve -a 0.0.0.0:8000"
 
 [tool.ruff]
 line-length = 120

@@ -110,6 +110,9 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Setup: pages/setup.md
+  - CLI:
+    - Overview: pages/cli/index.md
+    - Datasets: pages/cli/datasets.md
   - Library:
     - Objects: pages/library/objects.md
     - Extensions: pages/library/extensions.md
@@ -131,7 +134,9 @@ nav:
       - Related objects: pages/workspace/advanced/related.md
       - Similar objects: pages/workspace/advanced/similar.md
   - Use Cases:
-    - Overview: pages/usecases/usecase1.md
+    - Overview: pages/usecases/index.md
+    - Manage Intelligence: pages/usecases/manage-intelligence.md
+    - Use Datasets: pages/usecases/use-datasets.md
   - Reference:
     - Workspace: pages/reference/workspace.md
     - API:
