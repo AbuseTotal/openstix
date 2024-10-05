@@ -3,6 +3,7 @@ from stix2 import Environment, MemoryStore
 from openstix import utils
 from openstix.filters import Filter
 from openstix.objects import Bundle
+from openstix.toolkit import ObjectFactory
 from openstix.utils.extras import generate_possibilities
 
 
@@ -12,11 +13,11 @@ class Workspace(Environment):
     removing STIX objects, including handling multiple versions of objects.
     """
 
-    def __init__(self, store=None):
+    def __init__(self, factory=ObjectFactory(), store=None, source=None, sink=None):
         """Initializes the Workspace with a MemoryStore."""
-        if store is None:
+        if store is None and source is None and sink is None:
             store = MemoryStore()
-        super().__init__(store=store)
+        super().__init__(factory=factory, store=store, source=source, sink=sink)
 
     def stats(self, query=[]):
         """Generates statistics on the STIX objects within the store.
