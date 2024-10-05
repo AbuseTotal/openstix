@@ -1,4 +1,8 @@
+from pathlib import Path
+
 import click
+
+from openstix.constants import DEFAULT_OPENSTIX_PATH
 
 from .download import get_datasets_names, get_providers_names
 
@@ -22,13 +26,23 @@ def cli():
     multiple=True,
     help="Download the specified datasets.",
 )
+@click.option(
+    "-d",
+    "--directory",
+    required=False,
+    default=DEFAULT_OPENSTIX_PATH,
+    type=click.Path(),
+    help="Directory to store the datasets downloaded",
+)
 @click.pass_context
-def download(ctx, provider, datasets):
+def download(ctx, provider, datasets, directory):
     if datasets and provider is None:
         click.echo("Error: You must specify --provider when using --datasets.")
         click.echo()
         click.echo(ctx.get_help())
         ctx.exit(1)
+
+    directory = Path(directory)
 
     if datasets and provider:
         valid_datasets = get_datasets_names(provider)
@@ -42,7 +56,7 @@ def download(ctx, provider, datasets):
 
     from .download import process
 
-    process(provider, datasets)
+    process(directory, provider, datasets)
 
 
 @cli.command(

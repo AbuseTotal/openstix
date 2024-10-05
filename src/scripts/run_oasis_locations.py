@@ -1,13 +1,13 @@
 import os
 
-from openstix import OPENSTIX_PATH
+from openstix import DEFAULT_OPENSTIX_PATH
 from openstix.providers.oasis_open import Locations
 from openstix.toolkit.sources import FileSystemSource
 
 locations = Locations(
     source=FileSystemSource(
         stix_dir=os.path.join(
-            OPENSTIX_PATH,
+            DEFAULT_OPENSTIX_PATH,
             Locations.config.provider,
             Locations.config.name,
         ),

@@ -1,3 +1,4 @@
 import os
+from pathlib import Path
 
-OPENSTIX_PATH = os.path.expanduser("~/.openstix")
+DEFAULT_OPENSTIX_PATH = Path(os.path.expanduser("~/.openstix"))

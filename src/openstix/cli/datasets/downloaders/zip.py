@@ -5,14 +5,14 @@ from zipfile import ZipFile
 import requests
 from tqdm import tqdm
 
-from openstix.constants import OPENSTIX_PATH
+from openstix.constants import DEFAULT_OPENSTIX_PATH
 
 from .base import BaseDownloader
 
 
 class ZIPDownloader(BaseDownloader):
     def __init__(self, *args, **kwargs):
-        self.root = Path(OPENSTIX_PATH) / "tmp" / str(uuid.uuid4())
+        self.root = Path(DEFAULT_OPENSTIX_PATH) / "tmp" / str(uuid.uuid4())
         self.files_path = Path(self.root) / "files"
 
         self.root.mkdir(parents=True, exist_ok=True)

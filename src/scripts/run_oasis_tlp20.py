@@ -1,13 +1,13 @@
 import os
 
-from openstix import OPENSTIX_PATH
+from openstix import DEFAULT_OPENSTIX_PATH
 from openstix.providers.oasis_open import TLP20
 from openstix.toolkit.sources import FileSystemSource
 
 tlp20 = TLP20(
     source=FileSystemSource(
         stix_dir=os.path.join(
-            OPENSTIX_PATH,
+            DEFAULT_OPENSTIX_PATH,
             TLP20.config.provider,
             TLP20.config.name,
         ),
