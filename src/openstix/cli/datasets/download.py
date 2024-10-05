@@ -19,7 +19,7 @@ def get_dataset_configs(providers):
     return configs
 
 
-def process(provider=None, datasets=None):
+def process(directory, provider=None, datasets=None):
     for config in get_dataset_configs(providers):
         if provider and provider != config.provider:
             continue
@@ -29,7 +29,7 @@ def process(provider=None, datasets=None):
 
         print(f"Start processing dataset '{config.name}' from provider '{config.provider}'")
         for source in config.sources:
-            source.type.downloader(config.provider, source).run()
+            source.type.downloader(config.provider, source, directory).run()
 
 
 def get_providers_names(provider=None):

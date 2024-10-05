@@ -2,7 +2,7 @@ import os
 
 from stix2 import Environment
 
-from openstix import OPENSTIX_PATH
+from openstix import DEFAULT_OPENSTIX_PATH
 from openstix.providers.mitre.workspace import MITREWorkspace
 from openstix.toolkit.sinks import FileSystemSink
 from openstix.toolkit.sources import FileSystemSource
@@ -11,7 +11,7 @@ from openstix.toolkit.stores import MemoryStore
 enviroment = Environment(
     source=FileSystemSource(
         stix_dir=os.path.join(
-            OPENSTIX_PATH,
+            DEFAULT_OPENSTIX_PATH,
             "mitre",
             "atlas",
         ),
@@ -19,7 +19,7 @@ enviroment = Environment(
     ),
     sink=FileSystemSink(
         stix_dir=os.path.join(
-            OPENSTIX_PATH,
+            DEFAULT_OPENSTIX_PATH,
             "mitre",
             "atlas",
         ),

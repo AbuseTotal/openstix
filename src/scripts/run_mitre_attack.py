@@ -1,13 +1,13 @@
 import os
 
-from openstix import OPENSTIX_PATH
+from openstix import DEFAULT_OPENSTIX_PATH
 from openstix.providers.mitre import MITREAttack
 from openstix.toolkit.sources import FileSystemSource
 
 mitre_attack = MITREAttack(
     source=FileSystemSource(
         stix_dir=os.path.join(
-            OPENSTIX_PATH,
+            DEFAULT_OPENSTIX_PATH,
             MITREAttack.config.provider,
             MITREAttack.config.name,
         ),

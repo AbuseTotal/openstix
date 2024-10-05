@@ -2,7 +2,6 @@ import json
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-from openstix.constants import OPENSTIX_PATH
 from openstix.exceptions import DataSourceError
 from openstix.toolkit.sinks import FileSystemSink
 
@@ -10,12 +9,12 @@ from ..models import DataSourceConfig
 
 
 class BaseDownloader(ABC):
-    def __init__(self, provider: str, config: DataSourceConfig):
+    def __init__(self, provider: str, config: DataSourceConfig, directory: Path):
         self.config = config
 
         self.url = config.url
 
-        provider_path = Path(OPENSTIX_PATH) / provider
+        provider_path = directory / provider
         provider_path.mkdir(parents=True, exist_ok=True)
 
         self.sink = FileSystemSink(
