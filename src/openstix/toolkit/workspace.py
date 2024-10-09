@@ -37,8 +37,8 @@ class Workspace(Environment):
             stats[obj.type] = stats.get(obj.type, 0) + 1
         return stats
 
-    def create(self, cls, **kwargs):
-        """Overrides the `create` method of the `Environment` class to add new STIX objects
+    def create_add(self, cls, **kwargs):
+        """`create_add` method of the `Environment` class to add new STIX objects
         to the store immediately upon creation.
 
         Args:
