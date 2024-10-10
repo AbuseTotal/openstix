@@ -1,6 +1,6 @@
 from typing import Literal
 
-from openstix.filters import Filter
+from openstix.filters import Filter, utils
 from openstix.filters.presets import (
     ATTACK_PATTERN_FILTER,
 )
@@ -32,35 +32,43 @@ class MITREDatasetExplorer(CommonExplorerMixin):
         return self._workspace.query(filters)
 
     def get_technique(self, external_id):
-        filters = [ATTACK_PATTERN_FILTER, Filter("external_references.external_id", "=", external_id)]
-        return self._workspace.get(filters)
+        filters = [
+            ATTACK_PATTERN_FILTER,
+            Filter("external_references.external_id", "=", external_id),
+        ]
+        return self._workspace.query_one_or_none(filters)
 
     def get_matrices(self):
         return self._workspace.query([MITRE_MATRIX_FILTER])
 
     def get_matrix(self, name, aliases=True):
-        return self._workspace.query_name_and_alias(filters=[MITRE_MATRIX_FILTER], name=name, aliases=aliases)
+        filter_name, filter_aliases = utils.generate_filters_with_name_and_alias(MITRE_MATRIX_FILTER, name)
+        return self._workspace.query_one_or_none(filter_name) or self._workspace.query_one_or_none(filter_aliases)
 
     def get_tactics(self):
         return self._workspace.query([MITRE_TACTIC_FILTER])
 
     def get_tactic(self, name, aliases=False):
-        return self._workspace.query_name_and_alias(filters=[MITRE_TACTIC_FILTER], name=name, aliases=aliases)
+        filter_name, filter_aliases = utils.generate_filters_with_name_and_alias(MITRE_TACTIC_FILTER, name)
+        return self._workspace.query_one_or_none(filter_name) or self._workspace.query_one_or_none(filter_aliases)
 
     def get_data_sources(self):
         return self._workspace.query([MITRE_DATASOURCE_FILTER])
 
     def get_data_source(self, name, aliases=False):
-        return self._workspace.query_name_and_alias(filters=[MITRE_DATASOURCE_FILTER], name=name, aliases=aliases)
+        filter_name, filter_aliases = utils.generate_filters_with_name_and_alias(MITRE_DATASOURCE_FILTER, name)
+        return self._workspace.query_one_or_none(filter_name) or self._workspace.query_one_or_none(filter_aliases)
 
     def get_data_components(self):
         return self._workspace.query([MITRE_DATA_COMPONENT_FILTER])
 
     def get_data_component(self, name, aliases=False):
-        return self._workspace.query_name_and_alias(filters=[MITRE_DATA_COMPONENT_FILTER], name=name, aliases=aliases)
+        filter_name, filter_aliases = utils.generate_filters_with_name_and_alias(MITRE_DATA_COMPONENT_FILTER, name)
+        return self._workspace.query_one_or_none(filter_name) or self._workspace.query_one_or_none(filter_aliases)
 
     def get_assets(self):
         return self._workspace.query([MITRE_ASSET_FILTER])
 
     def get_asset(self, name, aliases=False):
-        return self._workspace.query_name_and_alias(filters=[MITRE_ASSET_FILTER], name=name, aliases=aliases)
+        filter_name, filter_aliases = utils.generate_filters_with_name_and_alias(MITRE_ASSET_FILTER, name)
+        return self._workspace.query_one_or_none(filter_name) or self._workspace.query_one_or_none(filter_aliases)
