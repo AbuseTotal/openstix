@@ -22,7 +22,7 @@ class Vulnerabilities:
             VULNERABILITY_FILTER,
             Filter("external_references.external_id", "=", value),
         ]
-        return self._workspace.get(filters)
+        return self._workspace.query_one_or_none(filters)
 
 
 class Sectors:
@@ -39,7 +39,7 @@ class Sectors:
             IDENTITY_FILTER,
             Filter("sectors", "contains", value),
         ]
-        return self._workspace.get(filters)
+        return self._workspace.query_one_or_none(filters)
 
 
 class Locations:
@@ -56,7 +56,7 @@ class Locations:
             LOCATION_FILTER,
             Filter("region", "=", value),
         ]
-        return self._workspace.get(filters)
+        return self._workspace.query_one_or_none(filters)
 
     def get_countries(self) -> list[Location]:
         filters = [LOCATION_FILTER]
@@ -68,7 +68,7 @@ class Locations:
             LOCATION_FILTER,
             Filter("country", "=", value),
         ]
-        return self._workspace.get(filters)
+        return self._workspace.query_one_or_none(filters)
 
     def get_administrative_areas(self, country: str) -> list[Location]:
         country = country.upper()
@@ -88,7 +88,7 @@ class Locations:
             Filter("country", "=", country),
             Filter("administrative_area", "=", area),
         ]
-        return self._workspace.get(filters)
+        return self._workspace.query_one_or_none(filters)
 
 
 class TLP20:
@@ -107,7 +107,7 @@ class TLP20:
         color = color.upper()
         if color not in TLP20.VALID_TLPs:
             raise ValueError(f"Invalid TLP color: {color}")
-        return self._workspace.get(
+        return self._workspace.query_one_or_none(
             filters=[
                 Filter("type", "=", "marking-definition"),
                 Filter("name", "=", f"TLP:{color}"),
