@@ -1,4 +1,4 @@
-from openstix.filters import utils
+from openstix.filters import Filter, utils
 from openstix.filters.presets import (
     CAMPAIGN_FILTER,
     COURSE_OF_ACTION_FILTER,
@@ -11,6 +11,9 @@ from openstix.filters.presets import (
 
 
 class CommonExplorerMixin:
+    def get(self, id):
+        return self._workspace.query_one_or_none(Filter("id", "=", id))
+
     def get_threat_actors(self):
         return self._workspace.query([THREAT_ACTOR_FILTER])
 
