@@ -43,3 +43,9 @@ def get_object_type(stix_object):
         return "extension"
 
     raise ValueError("Invalid STIX object: %s" % stix_object)
+
+
+def diff(object1, object2):
+    dict1 = object1._inner
+    dict2 = object2._inner
+    return {k: (dict1.get(k), dict2.get(k)) for k in set(dict1) | set(dict2) if dict1.get(k) != dict2.get(k)}
