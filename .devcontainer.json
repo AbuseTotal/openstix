@@ -33,6 +33,32 @@
           }
         }
       }
+    },
+    "cursor": {
+      "extensions": [
+        "ms-python.python",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "files.eol": "\n",
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "ruff.lint.args": [
+          "--config=/openstix-python/pyproject.toml"
+        ],
+        "ruff.format.args": [
+          "--config=/openstix-python/pyproject.toml"
+        ],
+        "python.defaultInterpreterPath": "/openstix-python/.venv/default/bin/python",
+        "python.analysis.autoImportCompletions": true,
+        "[python]": {
+          "editor.formatOnSave": true,
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.codeActionsOnSave": {
+            "source.fixAll": true,
+            "source.organizeImports.ruff": true
+          }
+        }
+      }
     }
   }
 }
