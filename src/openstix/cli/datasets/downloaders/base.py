@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 
 from openstix.exceptions import DataSourceError
-from openstix.toolkit.sinks import FileSystemSink
+from openstix.toolkit.sinks import FileSystemSinkEnhanced
 
 from ..models import DataSourceConfig
 
@@ -17,7 +17,7 @@ class BaseDownloader(ABC):
         provider_path = directory / provider
         provider_path.mkdir(parents=True, exist_ok=True)
 
-        self.sink = FileSystemSink(
+        self.sink = FileSystemSinkEnhanced(
             stix_dir=provider_path,
             allow_custom=True,
         )
