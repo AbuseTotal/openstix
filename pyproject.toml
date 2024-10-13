@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "openstix"
-version = "0.1.8"
+version = "0.2.0"
 description = "OpenSTIX aims to make STIX easy and accessible for analysts"
 readme = "README.md"
 license = "Apache-2.0"
@@ -31,7 +31,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-  "stix2 @ git+https://github.com/AbuseTotal/stix2.git@master",
+  "stix2",
   "taxii2-client==2.3.0",
   "click>=8.1.7",
   "requests>=2.31.0",
@@ -80,9 +80,6 @@ dependencies = [
     "mkdocs-glightbox",
     "mkdocs_gen_files",
     "mike",
-]
-post-install-commands = [
-  "git clone https://github.com/AbuseTotal/stix2.git /openstix-python/src/stix2 > /dev/null 2>&1 || true ; pip install -e /openstix-python/src/stix2/",
 ]
 
 [tool.hatch.envs.default.scripts]
