@@ -1,4 +1,4 @@
-from openstix.utils import is_marking, is_sco, is_sdo, is_sro, is_stix_type
+from openstix.utils import is_marking, is_sco, is_sdo, is_sro
 
 __all__ = [
     "class_for_type",
@@ -20,7 +20,7 @@ def class_for_type(stix_type):
     """
     from openstix.mappings import STIX_OBJECTS_MAPPING
 
-    if is_stix_type(stix_type):
+    if stix_type in STIX_OBJECTS_MAPPING:
         return STIX_OBJECTS_MAPPING[stix_type]
 
     raise ValueError("Invalid STIX type: %s" % stix_type)
