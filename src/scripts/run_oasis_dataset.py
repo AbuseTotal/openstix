@@ -4,7 +4,7 @@ from openstix.toolkit.sources import FileSystemSource
 
 dataset = OASISOpenDatasetExplorer(
     source=FileSystemSource(
-        stix_dir=DEFAULT_OPENSTIX_PATH / "oasis-open",
+        stix_dir=DEFAULT_OPENSTIX_PATH,
         allow_custom=True,
     )
 )

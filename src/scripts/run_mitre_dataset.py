@@ -4,7 +4,7 @@ from openstix.toolkit.sources import FileSystemSource
 
 dataset = MITREDatasetExplorer(
     source=FileSystemSource(
-        stix_dir=DEFAULT_OPENSTIX_PATH / "mitre",
+        stix_dir=DEFAULT_OPENSTIX_PATH,
         allow_custom=True,
     )
 )

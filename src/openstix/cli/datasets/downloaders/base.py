@@ -9,16 +9,12 @@ from ..models import DataSourceConfig
 
 
 class BaseDownloader(ABC):
-    def __init__(self, provider: str, config: DataSourceConfig, directory: Path):
+    def __init__(self, config: DataSourceConfig, directory: Path):
         self.config = config
-
         self.url = config.url
 
-        provider_path = directory / provider
-        provider_path.mkdir(parents=True, exist_ok=True)
-
         self.sink = FileSystemSinkEnhanced(
-            stix_dir=provider_path,
+            stix_dir=directory,
             allow_custom=True,
         )
 

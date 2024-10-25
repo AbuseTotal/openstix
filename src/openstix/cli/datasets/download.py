@@ -29,7 +29,7 @@ def process(directory, provider=None, datasets=None):
 
         print(f"Start processing dataset '{config.name}' from provider '{config.provider}'")
         for source in config.sources:
-            source.type.downloader(config.provider, source, directory).run()
+            source.type.downloader(source, directory).run()
 
 
 def get_providers_names(provider=None):
