@@ -39,12 +39,7 @@ CONFIG = [
                 "type": "json",
                 "url": "https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/main/dist/stix-atlas-attack-enterprise.json",
                 "ignore_object_types": ["x-mitre-collection"],
-            },
-            {
-                "type": "json",
-                "url": "https://raw.githubusercontent.com/mitre-atlas/atlas-navigator-data/main/dist/stix-atlas.json",
-                "ignore_object_types": ["x-mitre-collection"],
-            },
+            }
         ],
     },
 ]
