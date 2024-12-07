@@ -44,11 +44,7 @@ class Workspace(Environment):
 
     def query(self, query=None, last_version_only=True):
         all_objects = super().query(query or [])
-        return (
-            all_objects
-            if not last_version_only
-            else list({obj.id: obj for obj in reversed(all_objects)}.values())
-        )
+        return all_objects if not last_version_only else list({obj.id: obj for obj in all_objects}.values())
 
     def stats(self, query=None):
         return Counter(obj.type for obj in self.query(query))
