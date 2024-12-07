@@ -19,6 +19,13 @@ class Workspace(Environment):
             store = store or MemoryStore()
         super().__init__(factory=factory, store=store, source=source, sink=sink)
 
+    def add(self, obj, raise_on_error=True):
+        try:
+            super().add(obj)
+        except Exception as e:
+            if raise_on_error:
+                raise e
+
     def parse_add(self, data, allow_custom=False):
         parsed_data = utils.parse(data, allow_custom)
         if isinstance(parsed_data, Bundle):
