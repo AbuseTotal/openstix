@@ -32,12 +32,12 @@ classifiers = [
 ]
 dependencies = [
   "stix2",
-  "taxii2-client==2.3.0",
+  "taxii2-client>=2.3.0",
   "click>=8.1.7",
   "requests>=2.31.0",
-  "pydantic==2.7.4",
+  "pydantic>=2.7.4",
   "countryinfo>=0.1.2",
-  "mitreattack-python==3.0.2"
+  "mitreattack-python>=3.0.2"
 ]
 
 [project.urls]
