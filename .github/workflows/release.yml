@@ -23,7 +23,7 @@ jobs:
           python-version: 3.9
 
       - name: Install Hatch
-        run: pip install -U hatch
+        run: pip install -U hatch pkginfo
 
       - name: Build package
         run: hatch -v build
