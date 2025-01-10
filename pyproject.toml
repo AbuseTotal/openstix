@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "openstix"
-version = "0.2.2"
+version = "0.2.4"
 description = "OpenSTIX aims to make STIX easy and accessible for analysts"
 readme = "README.md"
 license = "Apache-2.0"
